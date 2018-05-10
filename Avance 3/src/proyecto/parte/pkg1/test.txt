@@ -1,0 +1,43 @@
+Program program()
+{
+	Program res;
+	SC algo = sc();
+res= new Program(algo);
+return res;
+}
+
+
+Comm command()
+{
+	Comm res;
+	Sc sc1 = sc();
+	res= new Comm();
+	res.getLSC().add(sc1);
+	while(TA==Scanner.PYCOMA)
+	{
+		accept(Scanner.PYCOMA);
+Sc scTemp = sc();
+res.getLSC().add(scTemp);
+
+	}
+	return res;
+}
+
+Sc sc()
+{
+	Sc res;
+	if(TA==Scanner.ID)
+	{
+		Token temp=new Token();
+		temp = TA;
+		accept(Scanner.ID);
+		if(TA==Scanner.ASIGN)
+		{
+			accept(Scanner.ASIGN);
+			Expr e= expr();
+			res= new SCAsign(temp,e);
+		}
+		else if(...)
+	}
+	Else if(TA==Scanner.IF)
+}
