@@ -12,7 +12,9 @@ statement : LET letStatement                                                    
 
 ;
 
-letStatement : identifier ASIGNACION expression ( PyCOMA | )                                #lsAsignAST
+letStatement
+locals [int storageIndex=0]
+: identifier ASIGNACION expression ( PyCOMA | )                                     #lsAsignAST
 ;
 returnStatement : expression ( PyCOMA | )                                           #rsExprAST
 ;
@@ -43,7 +45,7 @@ callExpression: PARIZQ expressionList PARDER                                    
 primitiveExpression:
       INT                                                                           #pExprINTAST
     | STRING                                                                        #pExprSTRINGAST
-    | ID                                                                            #pExprIDAST
+    | identifier                                                                    #pExprIDAST
     | TRUE                                                                          #pExprTRUEAST
     | FALSE                                                                         #pExprFALSEAST
     | PARIZQ expression PARDER                                                      #pExprGroupAST

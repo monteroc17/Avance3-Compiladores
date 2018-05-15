@@ -1,4 +1,4 @@
-// Generated from C:/Users/Daniel/Documents/TEC/Compi/Avance 3\Parser2.g4 by ANTLR 4.7
+// Generated from E:/TEC/Semestre 1 2018/Compiladores/Avance3-Compiladores/Avance 3\Parser2.g4 by ANTLR 4.7
 package generated;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -283,6 +283,7 @@ public class Parser2 extends Parser {
 	}
 
 	public static class LetStatementContext extends ParserRuleContext {
+		public int storageIndex = 0;
 		public LetStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -291,6 +292,7 @@ public class Parser2 extends Parser {
 		public LetStatementContext() { }
 		public void copyFrom(LetStatementContext ctx) {
 			super.copyFrom(ctx);
+			this.storageIndex = ctx.storageIndex;
 		}
 	}
 	public static class LsAsignASTContext extends LetStatementContext {
@@ -1155,7 +1157,9 @@ public class Parser2 extends Parser {
 		}
 	}
 	public static class PExprIDASTContext extends PrimitiveExpressionContext {
-		public TerminalNode ID() { return getToken(Parser2.ID, 0); }
+		public IdentifierContext identifier() {
+			return getRuleContext(IdentifierContext.class,0);
+		}
 		public PExprIDASTContext(PrimitiveExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -1268,7 +1272,7 @@ public class Parser2 extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(146);
-				match(ID);
+				identifier();
 				}
 				break;
 			case TRUE:
@@ -2565,8 +2569,8 @@ public class Parser2 extends Parser {
 		"\2\2\2\u0088\u0087\3\2\2\2\u0089\31\3\2\2\2\u008a\u008b\7\22\2\2\u008b"+
 		"\u008c\5\f\7\2\u008c\u008d\7\23\2\2\u008d\33\3\2\2\2\u008e\u008f\7\20"+
 		"\2\2\u008f\u0090\5\60\31\2\u0090\u0091\7\21\2\2\u0091\35\3\2\2\2\u0092"+
-		"\u00a6\7%\2\2\u0093\u00a6\7&\2\2\u0094\u00a6\7\'\2\2\u0095\u00a6\7\34"+
-		"\2\2\u0096\u00a6\7\35\2\2\u0097\u0098\7\20\2\2\u0098\u0099\5\f\7\2\u0099"+
+		"\u00a6\7%\2\2\u0093\u00a6\7&\2\2\u0094\u00a6\5@!\2\u0095\u00a6\7\34\2"+
+		"\2\u0096\u00a6\7\35\2\2\u0097\u0098\7\20\2\2\u0098\u0099\5\f\7\2\u0099"+
 		"\u009a\7\21\2\2\u009a\u00a6\3\2\2\2\u009b\u00a6\5\"\22\2\u009c\u009d\5"+
 		" \21\2\u009d\u009e\7\20\2\2\u009e\u009f\5\60\31\2\u009f\u00a0\7\21\2\2"+
 		"\u00a0\u00a6\3\2\2\2\u00a1\u00a6\5$\23\2\u00a2\u00a6\5*\26\2\u00a3\u00a6"+

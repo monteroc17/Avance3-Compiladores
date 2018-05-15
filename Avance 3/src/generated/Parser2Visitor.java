@@ -1,4 +1,4 @@
-// Generated from C:/Users/Daniel/Documents/TEC/Compi/Avance 3\Parser2.g4 by ANTLR 4.7
+// Generated from E:/TEC/Semestre 1 2018/Compiladores/Avance3-Compiladores/Avance 3\Parser2.g4 by ANTLR 4.7
 package generated;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 

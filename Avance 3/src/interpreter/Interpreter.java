@@ -89,7 +89,7 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.expression());
         Integer val = (Integer) evalStack.popValue();
         //CAMBIAR EL VALOR EN EL ALMACEN
-        //dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
+        dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
         return null;
     }
 
@@ -168,91 +168,115 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitElemExprPEElemAccessAST(Parser2.ElemExprPEElemAccessASTContext ctx) {
+        visit(ctx.primitiveExpression());
+        visit(ctx.elementAccess());
         return null;
     }
 
     @Override
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
+        visit(ctx.primitiveExpression());
+        visit(ctx.callExpression());
         return null;
     }
 
     @Override
     public Object visitElemExprPEEmptyAST(Parser2.ElemExprPEEmptyASTContext ctx) {
+        visit(ctx.primitiveExpression());
         return null;
     }
 
     @Override
     public Object visitElemAccessAST(Parser2.ElemAccessASTContext ctx) {
+        visit(ctx.expression());
         return null;
     }
 
     @Override
     public Object visitCallExprAST(Parser2.CallExprASTContext ctx) {
+        visit(ctx.expressionList());
         return null;
     }
 
     @Override
     public Object visitPExprINTAST(Parser2.PExprINTASTContext ctx) {
+        this.evalStack.pushValue(Integer.parseInt(ctx.INT().getText()));
         return null;
     }
 
     @Override
     public Object visitPExprSTRINGAST(Parser2.PExprSTRINGASTContext ctx) {
+        this.evalStack.pushValue(ctx.STRING().getText());
         return null;
     }
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
+        DataStorage.Value temp = dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex);
+        //Verificar de que tipo es o guardarlo sin importar el tipo y validar a la hora de comparar
+        //Preguntar como hacer
+        this.evalStack.pushValue(temp.value);
         return null;
     }
 
     @Override
     public Object visitPExprTRUEAST(Parser2.PExprTRUEASTContext ctx) {
+        this.evalStack.pushValue(true);
         return null;
     }
 
     @Override
     public Object visitPExprFALSEAST(Parser2.PExprFALSEASTContext ctx) {
+        this.evalStack.pushValue(false);
         return null;
     }
 
     @Override
     public Object visitPExprGroupAST(Parser2.PExprGroupASTContext ctx) {
+        visit(ctx.expression());
         return null;
     }
 
     @Override
     public Object visitPExprArrayLitAST(Parser2.PExprArrayLitASTContext ctx) {
+        visit(ctx.arrayLiteral());
         return null;
     }
 
     @Override
     public Object visitPExprArrayFuncAST(Parser2.PExprArrayFuncASTContext ctx) {
+        visit(ctx.arrayFunctions());
+        visit(ctx.expressionList());
         return null;
     }
 
     @Override
     public Object visitPExprFuncLitAST(Parser2.PExprFuncLitASTContext ctx) {
+        visit(ctx.functionLiteral());
         return null;
     }
 
     @Override
     public Object visitPExprHashLitAST(Parser2.PExprHashLitASTContext ctx) {
+        visit(ctx.hashLiteral());
         return null;
     }
 
     @Override
     public Object visitPExprPrintExprAST(Parser2.PExprPrintExprASTContext ctx) {
+        visit(ctx.printExpression());
         return null;
     }
 
     @Override
     public Object visitPExprIfExprAST(Parser2.PExprIfExprASTContext ctx) {
+        visit(ctx.ifExpression());
         return null;
     }
 
     @Override
     public Object visitAfLENAST(Parser2.AfLENASTContext ctx) {
+        //hay que revisar la lista
         return null;
     }
 
@@ -278,16 +302,20 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitArrayLitAST(Parser2.ArrayLitASTContext ctx) {
+        visit(ctx.expressionList());
         return null;
     }
 
     @Override
     public Object visitFuncLitAST(Parser2.FuncLitASTContext ctx) {
+        visit(ctx.functionParameters());
+        visit(ctx.blockStatement());
         return null;
     }
 
     @Override
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
+        visit(ctx.moreIdentifiers());
         return null;
     }
 
@@ -298,21 +326,30 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitHashLitAST(Parser2.HashLitASTContext ctx) {
+        visit(ctx.hashContent());
+        visit(ctx.moreHashContent());
         return null;
     }
 
     @Override
     public Object visitHashContentAST(Parser2.HashContentASTContext ctx) {
+        visit(ctx.expression(0));
+        visit(ctx.expression(1));
         return null;
     }
 
     @Override
     public Object visitMoreHashContentAST(Parser2.MoreHashContentASTContext ctx) {
+        for(Parser2.HashContentContext ele : ctx.hashContent()){
+            visit(ele);
+        }
         return null;
     }
 
     @Override
     public Object visitExprListMoreExprAST(Parser2.ExprListMoreExprASTContext ctx) {
+        visit(ctx.expression());
+        visit(ctx.moreExpressions());
         return null;
     }
 
@@ -323,21 +360,31 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitMoreExprAST(Parser2.MoreExprASTContext ctx) {
+        for(int i = 0; i< ctx.expression().size();i++){
+            //falta
+        }
         return null;
     }
 
     @Override
     public Object visitPrintExprAST(Parser2.PrintExprASTContext ctx) {
+        visit(ctx.expression());
         return null;
     }
 
     @Override
     public Object visitIfExprAST(Parser2.IfExprASTContext ctx) {
+        visit(ctx.expression());
+        visit(ctx.blockStatement(0));
+        visit(ctx.blockStatement(1));
         return null;
     }
 
     @Override
     public Object visitBlockStatementAST(Parser2.BlockStatementASTContext ctx) {
+        for(Parser2.StatementContext ele : ctx.statement()){
+            visit(ele);
+        }
         return null;
     }
 
