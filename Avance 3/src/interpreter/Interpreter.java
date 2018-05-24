@@ -1,5 +1,6 @@
 package interpreter;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import generated.Parser2;
 import generated.Parser2BaseVisitor;
 
@@ -393,9 +394,14 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitIfExprAST(Parser2.IfExprASTContext ctx) {
         //ESTA SOLUCIÓN NO ES DEFINITIVA!!! se tiene que revisar
-        visit(ctx.expression());
-        visit(ctx.blockStatement(0));
-        visit(ctx.blockStatement(1));
+        Boolean type=(Boolean) visit(ctx.expression());
+        if(type){
+            visit(ctx.blockStatement(0));
+        } else {
+            visit(ctx.blockStatement(1));
+        }
+
+
         return null;
     }
 
