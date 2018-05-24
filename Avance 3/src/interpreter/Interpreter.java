@@ -3,6 +3,8 @@ package interpreter;
 import generated.Parser2;
 import generated.Parser2BaseVisitor;
 
+import java.util.ArrayList;
+
 
 public class Interpreter extends Parser2BaseVisitor {
     private DataStorage dataS = null;
@@ -302,6 +304,9 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitArrayLitAST(Parser2.ArrayLitASTContext ctx) {
+        ArrayList<Object> lista = new ArrayList<>();
+        this.evalStack.pushValue(lista);
+        ctx.expressionList().esAF=false;
         visit(ctx.expressionList());
         return null;
     }
@@ -349,7 +354,16 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitExprListMoreExprAST(Parser2.ExprListMoreExprASTContext ctx) {
         visit(ctx.expression());
-        visit(ctx.moreExpressions());
+        if(!ctx.esAF){
+            Object elemento=this.evalStack.popValue();
+            ArrayList lista=(ArrayList) this.evalStack.popValue();
+            lista.add(elemento);
+            this.evalStack.pushValue(lista);
+            visit(ctx.moreExpressions());
+        } else {
+            visit(ctx.moreExpressions());
+        }
+
         return null;
     }
 
@@ -361,7 +375,11 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitMoreExprAST(Parser2.MoreExprASTContext ctx) {
         for(int i = 0; i< ctx.expression().size();i++){
-            //falta
+            visit(ctx.expression(i));
+            Object elemento=this.evalStack.popValue();
+            ArrayList lista=(ArrayList) this.evalStack.popValue();
+            lista.add(elemento);
+            this.evalStack.pushValue(lista);
         }
         return null;
     }
@@ -374,6 +392,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitIfExprAST(Parser2.IfExprASTContext ctx) {
+        //ESTA SOLUCIÓN NO ES DEFINITIVA!!! se tiene que revisar
         visit(ctx.expression());
         visit(ctx.blockStatement(0));
         visit(ctx.blockStatement(1));
