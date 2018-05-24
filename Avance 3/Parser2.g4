@@ -57,7 +57,11 @@ primitiveExpression:
     | ifExpression                                                                  #pExprIfExprAST
 ;
 arrayFunctions
-locals [boolean push = false]
+locals [boolean push = false,
+        boolean len = false,
+        boolean first = false,
+        boolean last = false,
+        boolean rest = false]
 :
     LEN                                                                             #afLENAST
     | FIRST                                                                         #afFIRSTAST

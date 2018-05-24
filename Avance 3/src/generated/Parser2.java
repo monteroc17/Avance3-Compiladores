@@ -1378,6 +1378,10 @@ public class Parser2 extends Parser {
 
 	public static class ArrayFunctionsContext extends ParserRuleContext {
 		public boolean push = false;
+		public boolean len = false;
+		public boolean first = false;
+		public boolean last = false;
+		public boolean rest = false;
 		public ArrayFunctionsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1387,6 +1391,10 @@ public class Parser2 extends Parser {
 		public void copyFrom(ArrayFunctionsContext ctx) {
 			super.copyFrom(ctx);
 			this.push = ctx.push;
+			this.len = ctx.len;
+			this.first = ctx.first;
+			this.last = ctx.last;
+			this.rest = ctx.rest;
 		}
 	}
 	public static class AfFIRSTASTContext extends ArrayFunctionsContext {

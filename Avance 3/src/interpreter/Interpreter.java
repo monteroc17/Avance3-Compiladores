@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import generated.Parser2;
 import generated.Parser2BaseVisitor;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -150,10 +151,16 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.additionExpression(0));
         for(int i = 0;i<=ctx.compOperator().size()-1;i++){
             visit(ctx.additionExpression(i+1));
-            Integer v2 = (Integer) this.evalStack.popValue();
-            Integer v1 = (Integer) this.evalStack.popValue();
-            if(evaluar(v1,v2,ctx.compOperator(i).getText())!=null)
-                this.evalStack.pushValue(evaluar(v1,v2,ctx.compOperator(i).getText()));
+            Object v2 = this.evalStack.popValue();
+            Object v1 = this.evalStack.popValue();
+            if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText()));
+            }
+            else {
+                //MOSTRAR ERROR
+                break;
+            }
         }
         return null;
     }
@@ -175,19 +182,20 @@ public class Interpreter extends Parser2BaseVisitor {
             if((v1 instanceof String)&&(v2 instanceof String)){
                 if(evaluar((String) v1,(String)v2,ctx.addOperator(i).getText())!=null)
                     this.evalStack.pushValue(evaluar((String) v1,(String) v2,ctx.addOperator(i).getText()));
-            }
-            else if((v1 instanceof Integer)&&(v2 instanceof String)){
+            }else if((v1 instanceof Integer)&&(v2 instanceof String)){
                 if(evaluar((Integer) v1,(String)v2,ctx.addOperator(i).getText())!=null)
                     this.evalStack.pushValue(evaluar((Integer) v1,(String) v2,ctx.addOperator(i).getText()));
-            }
-            else if((v1 instanceof String)&&(v2 instanceof Integer)){
+            }else if((v1 instanceof String)&&(v2 instanceof Integer)){
                 if(evaluar((String) v1,(Integer)v2,ctx.addOperator(i).getText())!=null)
                     this.evalStack.pushValue(evaluar((String) v1,(Integer) v2,ctx.addOperator(i).getText()));
             }else if((v1 instanceof Integer)&&(v2 instanceof Integer)){
                 if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText())!=null)
                     this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText()));
+            }else {
+                //MOSTRAR ERROR
+                break;
             }
-            
+
         }
         return null;
     }
@@ -209,6 +217,9 @@ public class Interpreter extends Parser2BaseVisitor {
             if((v2 instanceof Integer)&&(v1 instanceof Integer)){
                 if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
                     this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
+            }else {
+                //MOSTRAR ERROR
+                break;
             }
 
         }
@@ -295,7 +306,53 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitPExprArrayFuncAST(Parser2.PExprArrayFuncASTContext ctx) {
         visit(ctx.arrayFunctions());
-        visit(ctx.expressionList());
+        ctx.expressionList().esAF=true;
+        if(ctx.arrayFunctions().push){
+            ctx.expressionList().esPush=true;
+            visit(ctx.expressionList());
+            Object lista= this.evalStack.popValue();
+            Object valor= this.evalStack.popValue();
+            if((lista instanceof ArrayList)){
+                ((ArrayList) lista).add(valor);
+                this.evalStack.pushValue(lista);
+            } else{
+                //Error
+            }
+        } else if(ctx.arrayFunctions().first){
+            visit(ctx.expressionList());
+            Object lista= this.evalStack.popValue();
+            if(lista instanceof ArrayList){
+                this.evalStack.pushValue(((ArrayList) lista).get(0));
+            } else {
+                //ERROR
+            }
+        } else if(ctx.arrayFunctions().last){
+            visit(ctx.expressionList());
+            Object lista= this.evalStack.popValue();
+            if(lista instanceof ArrayList){
+                this.evalStack.pushValue(((ArrayList) lista).get(((ArrayList) lista).size()-1));//ultimo valor
+            } else {
+                //ERROR
+            }
+        } else if(ctx.arrayFunctions().len){
+            visit(ctx.expressionList());
+            Object lista= this.evalStack.popValue();
+            if(lista instanceof ArrayList){
+                this.evalStack.pushValue(((ArrayList) lista).size());
+            } else {
+                //ERROR
+            }
+        }else if(ctx.arrayFunctions().rest){
+            visit(ctx.expressionList());
+            Object lista= this.evalStack.popValue();
+            if(lista instanceof ArrayList){
+                ((ArrayList) lista).remove(0);
+                this.evalStack.pushValue(lista);
+            } else {
+                //ERROR
+            }
+        }
+
         return null;
     }
 
@@ -325,27 +382,31 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitAfLENAST(Parser2.AfLENASTContext ctx) {
-        //hay que revisar la lista
+        ctx.len=true;
         return null;
     }
 
     @Override
     public Object visitAfFIRSTAST(Parser2.AfFIRSTASTContext ctx) {
+        ctx.first=true;
         return null;
     }
 
     @Override
     public Object visitAfLASTAST(Parser2.AfLASTASTContext ctx) {
+        ctx.last=true;
         return null;
     }
 
     @Override
     public Object visitAfRESTAST(Parser2.AfRESTASTContext ctx) {
+        ctx.rest=true;
         return null;
     }
 
     @Override
     public Object visitAfPUSHAST(Parser2.AfPUSHASTContext ctx) {
+        ctx.push=true;
         return null;
     }
 
@@ -406,6 +467,7 @@ public class Interpreter extends Parser2BaseVisitor {
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
             this.evalStack.pushValue(lista);
+            ctx.moreExpressions().esAF=true;
             visit(ctx.moreExpressions());
         } else {
             visit(ctx.moreExpressions());
@@ -423,10 +485,13 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitMoreExprAST(Parser2.MoreExprASTContext ctx) {
         for(int i = 0; i< ctx.expression().size();i++){
             visit(ctx.expression(i));
-            Object elemento=this.evalStack.popValue();
-            ArrayList lista=(ArrayList) this.evalStack.popValue();
-            lista.add(elemento);
-            this.evalStack.pushValue(lista);
+            if(!ctx.esAF){//si es una lista, se tienen que agregar los datos a la lista
+                Object elemento=this.evalStack.popValue();
+                ArrayList lista=(ArrayList) this.evalStack.popValue();
+                lista.add(elemento);
+                this.evalStack.pushValue(lista);
+            }
+
         }
         return null;
     }
@@ -434,6 +499,7 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitPrintExprAST(Parser2.PrintExprASTContext ctx) {
         visit(ctx.expression());
+        System.out.println(this.evalStack.popValue());
         return null;
     }
 
@@ -447,7 +513,7 @@ public class Interpreter extends Parser2BaseVisitor {
             Boolean esTrue= (Boolean) expression;
             if (esTrue)
                 visit(ctx.blockStatement(0));
-            else visit(ctx.blockStatement(1));
+            else if(!esTrue && ctx.blockStatement().size()==2) visit(ctx.blockStatement(1));
         }
 
 
