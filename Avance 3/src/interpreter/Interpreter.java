@@ -61,6 +61,36 @@ public class Interpreter extends Parser2BaseVisitor {
 
     }
 
+    private String evaluar(String v1, String v2, String op){
+
+
+        if(op.equals("+")){
+            return v1+v2;
+        }
+        else return null;
+
+    }
+
+    private String evaluar(Integer v1, String v2, String op){
+
+
+        if(op.equals("+")){
+            return v1+v2;
+        }
+        else return null;
+
+    }
+
+    private String evaluar(String v1, Integer v2, String op){
+
+
+        if(op.equals("+")){
+            return v1+v2;
+        }
+        else return null;
+
+    }
+
     @Override
     public Object visitProgAST(Parser2.ProgASTContext ctx) {
         for(Parser2.StatementContext ele : ctx.statement()){
@@ -140,11 +170,24 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.multiplicationExpression(0));
         for(int i=0; i<= ctx.addOperator().size()-1; i++){
             visit(ctx.multiplicationExpression(i+1));
-            Integer v2 = (Integer) this.evalStack.popValue();
-            Integer v1 = (Integer) this.evalStack.popValue();
-            if(evaluar(v1,v2,ctx.addOperator(i).getText())!=null)
-                this.evalStack.pushValue(evaluar(v1,v2,ctx.addOperator(i).getText()));
-
+            Object v2 = this.evalStack.popValue();
+            Object v1 = this.evalStack.popValue();
+            if((v1 instanceof String)&&(v2 instanceof String)){
+                if(evaluar((String) v1,(String)v2,ctx.addOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((String) v1,(String) v2,ctx.addOperator(i).getText()));
+            }
+            else if((v1 instanceof Integer)&&(v2 instanceof String)){
+                if(evaluar((Integer) v1,(String)v2,ctx.addOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((Integer) v1,(String) v2,ctx.addOperator(i).getText()));
+            }
+            else if((v1 instanceof String)&&(v2 instanceof Integer)){
+                if(evaluar((String) v1,(Integer)v2,ctx.addOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((String) v1,(Integer) v2,ctx.addOperator(i).getText()));
+            }else if((v1 instanceof Integer)&&(v2 instanceof Integer)){
+                if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText()));
+            }
+            
         }
         return null;
     }
@@ -161,10 +204,13 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.elementExpression(0));
         for(int i=0; i<= ctx.mulOperator().size()-1; i++){
             visit(ctx.elementExpression(i+1));
-            Integer v2 = (Integer) this.evalStack.popValue();
-            Integer v1 = (Integer) this.evalStack.popValue();
-            if(evaluar(v1,v2,ctx.mulOperator(i).getText())!=null)
-                this.evalStack.pushValue(evaluar(v1,v2,ctx.mulOperator(i).getText()));
+            Object v2 = this.evalStack.popValue();
+            Object v1 = this.evalStack.popValue();
+            if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
+                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
+            }
+
         }
         return null;
     }
@@ -394,11 +440,14 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitIfExprAST(Parser2.IfExprASTContext ctx) {
         //ESTA SOLUCIÓN NO ES DEFINITIVA!!! se tiene que revisar
-        Boolean type=(Boolean) visit(ctx.expression());
-        if(type){
-            visit(ctx.blockStatement(0));
-        } else {
-            visit(ctx.blockStatement(1));
+        visit(ctx.expression());
+        //se saca el valor de esa expresion
+        Object expression = this.evalStack.popValue();
+        if(expression instanceof Boolean){//se verifica si la expresion es booleana
+            Boolean esTrue= (Boolean) expression;
+            if (esTrue)
+                visit(ctx.blockStatement(0));
+            else visit(ctx.blockStatement(1));
         }
 
 
