@@ -8,6 +8,7 @@ package proyecto.parte.pkg1;
 import checker.Checker;
 import generated.Parser2;
 import generated.Scanner;
+import interpreter.Interpreter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -115,8 +116,14 @@ public class Ventana extends javax.swing.JFrame {
         });
 
         btnInterpretarInstrucciones.setText("Interpretar Instrucciones");
+        btnInterpretarInstrucciones.setEnabled(false);
+        btnInterpretarInstrucciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInterpretarInstruccionesActionPerformed(evt);
+            }
+        });
 
-        txtCodigo.setText("let age = 1;\nlet name = \"Monkey\";\nlet result = 10 * (20 / 2);\n\nlet myArray = [1, 2, 3, 4, 5];\n\nlet thorsten = {\"name\": \"Thorsten\", \"age\": 28};\n\nmyArray[0] // => 1\nthorsten[\"name\"] // => \"Thorsten\"\n\nlet add = fn(a, b) { return a + b; };\n\nlet fibonacci = fn(x) {\nif (x == 0) {\n0\n} else {\nif (x == 1) {\n1\n} else {\nfibonacci(x - 1) + fibonacci(x - 2);\n}\n}\n};\n");
+        txtCodigo.setText("");
         txtCodigo.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 txtCodigoCaretUpdate(evt);
@@ -182,6 +189,10 @@ public class Ventana extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtCodigoCaretUpdate(CaretEvent evt) {
+
+    }
+
     private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
         txtConsola.setText("Running...\n");
 
@@ -207,23 +218,22 @@ public class Ventana extends javax.swing.JFrame {
         }
         catch(Exception e){txtConsola.append("No hay archivo");}
 
-        List<Token> lista = (List<Token>) scanner.getAllTokens();
+        //List<Token> lista = (List<Token>) scanner.getAllTokens();
 
-        /*for (Token t : lista)
-
-            System.out.println(t.getType() + ": " + t.getText() + "\n");*/
-
-        scanner.reset();
+        //scanner.reset();
 
         try{
             tree = parser.program();
             Checker checker = new Checker();
             checker.visit(tree);
             System.out.println("Compilacion Exitosa!");
+            btnInterpretarInstrucciones.setEnabled(true);
 
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
+
+
 
     }//GEN-LAST:event_btnRunActionPerformed
 
@@ -260,12 +270,20 @@ public class Ventana extends javax.swing.JFrame {
         try{
             treeGUI = org.antlr.v4.gui.Trees.inspect(tree,parser);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
     }//GEN-LAST:event_btnASTActionPerformed
 
-
+    private void btnInterpretarInstruccionesActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnInterpretarInstruccionesActionPerformed
+        txtConsola.setText("Interpretación de Instrucciones");
+        try{
+            Interpreter interpreter = new Interpreter();
+            interpreter.visit(tree);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
 
     /*
     * Permite obtener la fila y columna del cursor actual.

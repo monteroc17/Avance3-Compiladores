@@ -89,7 +89,7 @@ public class Checker extends Parser2BaseVisitor{
             if(tipo!=-1){
                 if (tipo==8)//si lo que viene es una funcion con retorno
                     tipo=0;//transformela a neutro
-                this.tablaIDs.insertar(((Token) ctx.identifier()),tipo,ctx);
+                this.tablaIDs.insertar( ctx.identifier().getText(),tipo,ctx);
                 this.tablaIDs.imprimir();
             }
         }

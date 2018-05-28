@@ -1,6 +1,6 @@
 package interpreter;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+//import com.sun.org.apache.xpath.internal.operations.Bool;
 import generated.Parser2;
 import generated.Parser2BaseVisitor;
 
@@ -120,10 +120,13 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitLsAsignAST(Parser2.LsAsignASTContext ctx) {
+        ctx.storageIndex=dataS.getActualStorageIndex();
+        dataS.addData(ctx.identifier().getText(), new Object());
         visit(ctx.expression());
-        Integer val = (Integer) evalStack.popValue();
+        Object val =  evalStack.popValue();
         //CAMBIAR EL VALOR EN EL ALMACEN
         dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
+        System.out.println(this.dataS.toString());
         return null;
     }
 
