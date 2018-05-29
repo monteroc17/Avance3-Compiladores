@@ -418,6 +418,11 @@ public class Checker extends Parser2BaseVisitor{
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
+        TerminalNode idToken=(TerminalNode) visit(ctx.identifier());
+        SymbolTable.Ident res = tablaIDs.buscar(idToken.getText());
+        if(res!=null){
+            ctx.identifier().decl = res.decl;
+        }
         return 0;
     }
 
