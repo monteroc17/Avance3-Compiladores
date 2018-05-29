@@ -281,7 +281,7 @@ public class Ventana extends javax.swing.JFrame {
             Interpreter interpreter = new Interpreter();
             interpreter.visit(tree);
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
 

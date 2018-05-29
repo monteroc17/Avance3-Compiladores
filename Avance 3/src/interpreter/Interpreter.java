@@ -22,6 +22,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
 
         if(op.equals("+")){
+            System.out.println(v1+v2);
             return v1+v2;
         }
         else if(op.equals("-")){
@@ -74,7 +75,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     private String evaluar(Integer v1, String v2, String op){
 
-
         if(op.equals("+")){
             return v1+v2;
         }
@@ -94,6 +94,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitProgAST(Parser2.ProgASTContext ctx) {
+
         for(Parser2.StatementContext ele : ctx.statement()){
             visit(ele);
         }
@@ -102,6 +103,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitStLETAST(Parser2.StLETASTContext ctx) {
+        System.out.println("ENTRE!");
         visit(ctx.letStatement());
         return null;
     }
@@ -120,6 +122,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitLsAsignAST(Parser2.LsAsignASTContext ctx) {
+        System.out.println("ENTRE LSASIGN!");
         ctx.storageIndex=dataS.getActualStorageIndex();
         dataS.addData(ctx.identifier().getText(), new Object());
         visit(ctx.expression());
@@ -144,6 +147,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitExprAddAST(Parser2.ExprAddASTContext ctx) {
+        System.out.println("ENTRE! ADDEXP");
         visit(ctx.additionExpression());
         visit(ctx.comparison());
         return null;
@@ -151,18 +155,30 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitCompAST(Parser2.CompASTContext ctx) {
-        visit(ctx.additionExpression(0));
-        for(int i = 0;i<=ctx.compOperator().size()-1;i++){
-            visit(ctx.additionExpression(i+1));
-            Object v2 = this.evalStack.popValue();
-            Object v1 = this.evalStack.popValue();
-            if((v2 instanceof Integer)&&(v1 instanceof Integer)){
-                if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText()));
-            }
-            else {
-                //MOSTRAR ERROR
-                break;
+        if(!ctx.compOperator().isEmpty()){
+            visit(ctx.additionExpression(0));
+
+            if(!(ctx.compOperator().size()==1)){
+                for(int i = 0;i<=ctx.compOperator().size()-1;i++){
+                    visit(ctx.additionExpression(i+1));
+                    Object v2 = this.evalStack.popValue();
+                    Object v1 = this.evalStack.popValue();
+                    if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                        if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText()));
+                    }
+                    else {
+                        //MOSTRAR ERROR
+                        break;
+                    }
+                }
+            } else{
+                Object v2 = this.evalStack.popValue();
+                Object v1 = this.evalStack.popValue();
+                if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                    if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText()));
+                }
             }
         }
         return null;
@@ -170,6 +186,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitAddExprAST(Parser2.AddExprASTContext ctx) {
+        System.out.println("ENTRE! ADDEXP");
         visit(ctx.multiplicationExpression());
         visit(ctx.additionFactor());
         return null;
@@ -177,26 +194,52 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitAddFactorAST(Parser2.AddFactorASTContext ctx) {
-        visit(ctx.multiplicationExpression(0));
-        for(int i=0; i<= ctx.addOperator().size()-1; i++){
-            visit(ctx.multiplicationExpression(i+1));
-            Object v2 = this.evalStack.popValue();
-            Object v1 = this.evalStack.popValue();
-            if((v1 instanceof String)&&(v2 instanceof String)){
-                if(evaluar((String) v1,(String)v2,ctx.addOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((String) v1,(String) v2,ctx.addOperator(i).getText()));
-            }else if((v1 instanceof Integer)&&(v2 instanceof String)){
-                if(evaluar((Integer) v1,(String)v2,ctx.addOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((Integer) v1,(String) v2,ctx.addOperator(i).getText()));
-            }else if((v1 instanceof String)&&(v2 instanceof Integer)){
-                if(evaluar((String) v1,(Integer)v2,ctx.addOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((String) v1,(Integer) v2,ctx.addOperator(i).getText()));
-            }else if((v1 instanceof Integer)&&(v2 instanceof Integer)){
-                if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText()));
-            }else {
-                //MOSTRAR ERROR
-                break;
+        System.out.println("ENTRE! ADDFACTOR");
+        if(!ctx.addOperator().isEmpty()){
+            visit(ctx.multiplicationExpression(0));
+
+            if(!(ctx.addOperator().size()==1)){
+                for(int i=0; i<= ctx.addOperator().size()-1; i++){
+                    visit(ctx.multiplicationExpression(i+1));
+                    Object v2 = this.evalStack.popValue();
+                    Object v1 = this.evalStack.popValue();
+                    if((v1 instanceof String)&&(v2 instanceof String)){
+                        if(evaluar((String) v1,(String)v2,ctx.addOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((String) v1,(String) v2,ctx.addOperator(i).getText()));
+                    }else if((v1 instanceof Integer)&&(v2 instanceof String)){
+                        if(evaluar((Integer) v1,(String)v2,ctx.addOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((Integer) v1,(String) v2,ctx.addOperator(i).getText()));
+                    }else if((v1 instanceof String)&&(v2 instanceof Integer)){
+                        if(evaluar((String) v1,(Integer)v2,ctx.addOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((String) v1,(Integer) v2,ctx.addOperator(i).getText()));
+                    }else if((v1 instanceof Integer)&&(v2 instanceof Integer)){
+                        if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText()));
+                    }else {
+                        //MOSTRAR ERROR
+                        break;
+                    }
+
+                }
+            }else{
+                Object v2 = this.evalStack.popValue();
+                Object v1 = this.evalStack.popValue();
+                if((v1 instanceof String)&&(v2 instanceof String)){
+                    if(evaluar((String) v1,(String)v2,ctx.addOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((String) v1,(String) v2,ctx.addOperator(0).getText()));
+                }else if((v1 instanceof Integer)&&(v2 instanceof String)){
+                    if(evaluar((Integer) v1,(String)v2,ctx.addOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((Integer) v1,(String) v2,ctx.addOperator(0).getText()));
+                }else if((v1 instanceof String)&&(v2 instanceof Integer)){
+                    if(evaluar((String) v1,(Integer)v2,ctx.addOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((String) v1,(Integer) v2,ctx.addOperator(0).getText()));
+                }else if((v1 instanceof Integer)&&(v2 instanceof Integer)){
+                    if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(0).getText()));
+                }else {
+                    //MOSTRAR ERROR
+
+                }
             }
 
         }
@@ -205,6 +248,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitMultExprAST(Parser2.MultExprASTContext ctx) {
+        System.out.println("ENTRE! MULTEXPR");
         visit(ctx.elementExpression());
         visit(ctx.multiplicationFactor());
         return null;
@@ -212,20 +256,35 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitMultFactorAST(Parser2.MultFactorASTContext ctx) {
-        visit(ctx.elementExpression(0));
-        for(int i=0; i<= ctx.mulOperator().size()-1; i++){
-            visit(ctx.elementExpression(i+1));
-            Object v2 = this.evalStack.popValue();
-            Object v1 = this.evalStack.popValue();
-            if((v2 instanceof Integer)&&(v1 instanceof Integer)){
-                if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
-                    this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
-            }else {
-                //MOSTRAR ERROR
-                break;
-            }
+        System.out.println("ENTRE! MULFACTOR");
+        if(!ctx.mulOperator().isEmpty()){
+            visit(ctx.elementExpression(0));
 
+            if(!(ctx.mulOperator().size()==1)){
+                for(int i=0; i<= ctx.mulOperator().size()-1; i++){
+                    visit(ctx.elementExpression(i+1));
+                    Object v2 = this.evalStack.popValue();
+                    Object v1 = this.evalStack.popValue();
+                    if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                        if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
+                            this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
+                    }else {
+                        //MOSTRAR ERROR
+                        break;
+                    }
+                }
+            } else {
+                Object v2 = this.evalStack.popValue();
+                Object v1 = this.evalStack.popValue();
+                if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+                    if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(0).getText())!=null)
+                        this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(0).getText()));
+                }else {
+                    //MOSTRAR ERROR
+                }
+            }
         }
+        System.out.println("SALI DE MUL FACTOR");
         return null;
     }
 
@@ -276,8 +335,6 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
         DataStorage.Value temp = dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex);
-        //Verificar de que tipo es o guardarlo sin importar el tipo y validar a la hora de comparar
-        //Preguntar como hacer
         this.evalStack.pushValue(temp.value);
         return null;
     }
