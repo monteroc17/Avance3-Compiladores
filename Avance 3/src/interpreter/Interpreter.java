@@ -128,7 +128,8 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.expression());
         Object val =  evalStack.popValue();
         //CAMBIAR EL VALOR EN EL ALMACEN
-        dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
+        //dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
+        dataS.getData(ctx.identifier().getText()).value=val;
         System.out.println(this.dataS.toString());
         return null;
     }
@@ -334,6 +335,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
+        System.out.println("ID:"+ctx.identifier().getText());
         DataStorage.Value temp = dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex);
         this.evalStack.pushValue(temp.value);
         return null;

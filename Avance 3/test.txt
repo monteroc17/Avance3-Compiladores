@@ -1,1 +1,6 @@
-let a=2+2;
+let age = 1;
+let name = "Monkey";
+let result = 10 * (20 / 2);
+let a=5-result*age;
+let b=6;
+let x=4;
