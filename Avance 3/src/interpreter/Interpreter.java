@@ -165,8 +165,15 @@ public class Interpreter extends Parser2BaseVisitor {
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
                     if((v2 instanceof Integer)&&(v1 instanceof Integer)){
-                        if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null)
-                            this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText()));
+                        if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null){
+                            Integer res =evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText());
+                            if(res!=null){
+                                if(res==0)
+                                    this.evalStack.pushValue(true);
+                                else this.evalStack.pushValue(false);
+                            }
+
+                        }
                     }
                     else {
                         //MOSTRAR ERROR
@@ -177,8 +184,15 @@ public class Interpreter extends Parser2BaseVisitor {
                 Object v2 = this.evalStack.popValue();
                 Object v1 = this.evalStack.popValue();
                 if((v2 instanceof Integer)&&(v1 instanceof Integer)){
-                    if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText())!=null)
-                        this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText()));
+                    if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText())!=null){
+                        Integer res =evaluar((Integer) v1,(Integer) v2,ctx.compOperator(0).getText());
+                        if (res != null) {
+                            if(res==0)
+                                this.evalStack.pushValue(true);
+                            else this.evalStack.pushValue(false);
+                        }
+
+                    }
                 }
             }
         }
@@ -586,6 +600,12 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitBlockStatementAST(Parser2.BlockStatementASTContext ctx) {
         for(Parser2.StatementContext ele : ctx.statement()){
             visit(ele);
+            if(ele.start.getText().equals("return")){
+                ctx.returns=true;
+                //Reingresar el valor que de el retorno para asignarselo a la funcion. PREGUNTAR SI ES ASI---------------------
+                this.evalStack.pushValue(this.dataS.getData().getLast().value);
+                break;
+            }
         }
         return null;
     }
