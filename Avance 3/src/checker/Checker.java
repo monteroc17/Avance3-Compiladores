@@ -90,6 +90,7 @@ public class Checker extends Parser2BaseVisitor{
                 if (tipo==8)//si lo que viene es una funcion con retorno
                     tipo=0;//transformela a neutro
                 this.tablaIDs.insertar( ctx.identifier().getText(),tipo,ctx);
+                //this.tablaIDs.insertar(((Token) ctx.identifier()),tipo,ctx);
                 this.tablaIDs.imprimir();
             }
         }
@@ -418,8 +419,8 @@ public class Checker extends Parser2BaseVisitor{
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
-        TerminalNode idToken=(TerminalNode) visit(ctx.identifier());
-        SymbolTable.Ident res = tablaIDs.buscar(idToken.getText());
+
+        SymbolTable.Ident res = tablaIDs.buscar(ctx.identifier().getText());
         if(res!=null){
             ctx.identifier().decl = res.decl;
         }

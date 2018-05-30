@@ -256,7 +256,7 @@ public class Ventana extends javax.swing.JFrame {
                 br.close();
                 txtCodigo.requestFocus();
             }
-            catch(Exception e2) { System.out.println(e2); }
+            catch(Exception e2) { e2.printStackTrace(); }
         }
         else if(result == JFileChooser.CANCEL_OPTION)
             System.out.println("Canceló!");
@@ -270,7 +270,7 @@ public class Ventana extends javax.swing.JFrame {
         try{
             treeGUI = org.antlr.v4.gui.Trees.inspect(tree,parser);
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
 
     }//GEN-LAST:event_btnASTActionPerformed
@@ -282,7 +282,7 @@ public class Ventana extends javax.swing.JFrame {
             interpreter.visit(tree);
             btnInterpretarInstrucciones.setEnabled(false);
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
 
