@@ -543,9 +543,10 @@ public class Interpreter extends Parser2BaseVisitor {
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
             this.evalStack.pushValue(lista);
-            ctx.moreExpressions().esAF=true;
+            ctx.moreExpressions().esAF=false;
             visit(ctx.moreExpressions());
         } else {
+            ctx.moreExpressions().esAF=true;
             visit(ctx.moreExpressions());
         }
 
