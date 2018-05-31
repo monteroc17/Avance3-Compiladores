@@ -4,8 +4,11 @@ package interpreter;
 import generated.Parser2;
 import generated.Parser2BaseVisitor;
 
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class Interpreter extends Parser2BaseVisitor {
@@ -320,10 +323,27 @@ public class Interpreter extends Parser2BaseVisitor {
         visit(ctx.expression());
         Object valor= this.evalStack.popValue();
         Object lista= this.evalStack.popValue();
-        if(valor instanceof Integer){
-            if((Integer)valor<((ArrayList)lista).size())
-                this.evalStack.pushValue(((ArrayList) lista).get((Integer) valor));
+        if(lista instanceof ArrayList){
+            if(valor instanceof Integer){
+                if((Integer)valor<((ArrayList)lista).size())
+                    this.evalStack.pushValue(((ArrayList) lista).get((Integer) valor));
+            }
+        } else if(lista instanceof HashMap){
+            HashMap dic=(HashMap) lista;
+            Iterator it = dic.entrySet().iterator();
+            while (it.hasNext()) {
+                HashMap.Entry pair = (HashMap.Entry)it.next();
+                if(valor.equals(pair.getKey())){
+                    this.evalStack.pushValue(pair.getValue());
+                    return null;
+                } else if(valor.equals(pair.getValue())){
+                    this.evalStack.pushValue(pair.getKey());
+                    return null;
+                }
+                it.remove();
+            }
         }
+
         return null;
     }
 
@@ -380,6 +400,7 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitPExprArrayFuncAST(Parser2.PExprArrayFuncASTContext ctx) {
         visit(ctx.arrayFunctions());
         ctx.expressionList().esAF=true;
+        ctx.expressionList().esArray=false;
         if(ctx.arrayFunctions().push){
             ctx.expressionList().esPush=true;
             visit(ctx.expressionList());
@@ -488,6 +509,7 @@ public class Interpreter extends Parser2BaseVisitor {
         ArrayList<Object> lista = new ArrayList<>();
         this.evalStack.pushValue(lista);
         ctx.expressionList().esAF=false;
+        ctx.expressionList().esArray=true;
         visit(ctx.expressionList());
         return null;
     }
@@ -512,6 +534,8 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitHashLitAST(Parser2.HashLitASTContext ctx) {
+        HashMap dictionary=new HashMap();
+        this.evalStack.pushValue(dictionary);
         visit(ctx.hashContent());
         visit(ctx.moreHashContent());
         return null;
@@ -521,6 +545,11 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitHashContentAST(Parser2.HashContentASTContext ctx) {
         visit(ctx.expression(0));
         visit(ctx.expression(1));
+        Object value=this.evalStack.popValue();
+        Object key=this.evalStack.popValue();
+        HashMap dic=(HashMap) this.evalStack.popValue();
+        dic.put(key,value);
+        this.evalStack.pushValue(dic);
         return null;
     }
 
@@ -535,18 +564,17 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitExprListMoreExprAST(Parser2.ExprListMoreExprASTContext ctx) {
         visit(ctx.expression());
-        if(!ctx.esAF){
+        if(ctx.esArray){
             Object elemento=this.evalStack.popValue();
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
             this.evalStack.pushValue(lista);
             ctx.moreExpressions().esAF=false;
             visit(ctx.moreExpressions());
-        } else {
+        } else if(ctx.esAF) {
             ctx.moreExpressions().esAF=true;
             visit(ctx.moreExpressions());
         }
-
         return null;
     }
 

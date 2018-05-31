@@ -38,9 +38,10 @@ elementExpression:  (primitiveExpression elementAccess)                         
                     |(primitiveExpression callExpression )                          #elemExprPECallExpAST
                     |(primitiveExpression)                                          #elemExprPEEmptyAST
 ;
-elementAccess: PARCUADIZQ expression PARCUADDER                                    #elemAccessAST
+elementAccess locals [boolean esArray=false, boolean esHash=false]
+             : PARCUADIZQ expression PARCUADDER                                    #elemAccessAST
 ;
-callExpression: PARIZQ expressionList PARDER                                      #callExprAST
+callExpression : PARIZQ expressionList PARDER                                      #callExprAST
 ;
 primitiveExpression:
       INT                                                                           #pExprINTAST
@@ -84,13 +85,13 @@ hashContent	: expression DOSPTOS expression                                     
 moreHashContent	: (COMA hashContent)*                                               #moreHashContentAST
 ;
 expressionList
-locals [int cont = 0, boolean esPush = false, boolean esAF = false]
+locals [int cont = 0, boolean esPush = false, boolean esAF = false, boolean esArray = false]
 :
     expression moreExpressions                                                      #exprListMoreExprAST
     |                                                                               #exprListEmptyAST
 ;
 moreExpressions
-locals [int cont = 0, boolean esAF = false]
+locals [int cont = 0, boolean esAF = false, boolean esArray = false]
 : (COMA expression)*                                                #moreExprAST
 ;
 printExpression : PUTS PARIZQ expression PARDER                                     #printExprAST

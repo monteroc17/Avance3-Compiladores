@@ -239,11 +239,12 @@ public class Ventana extends javax.swing.JFrame {
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser cargar = new JFileChooser();
+        cargar.setApproveButtonText("Cargar");
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        cargar.setCurrentDirectory(workingDirectory);
         int result = cargar.showSaveDialog(this);
         if(result == JFileChooser.APPROVE_OPTION)
         {
-            System.out.println("ACEPTÓ!");
-            cargar.showOpenDialog(null);
             archivo = cargar.getSelectedFile();
             try
             {
@@ -259,7 +260,7 @@ public class Ventana extends javax.swing.JFrame {
             catch(Exception e2) { e2.printStackTrace(); }
         }
         else if(result == JFileChooser.CANCEL_OPTION)
-            System.out.println("Canceló!");
+            System.out.println("");
 
     }//GEN-LAST:event_btnLoadActionPerformed
 

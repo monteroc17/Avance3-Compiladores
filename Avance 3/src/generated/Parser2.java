@@ -1000,6 +1000,8 @@ public class Parser2 extends Parser {
 	}
 
 	public static class ElementAccessContext extends ParserRuleContext {
+		public boolean esArray = false;
+		public boolean esHash = false;
 		public ElementAccessContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1008,6 +1010,8 @@ public class Parser2 extends Parser {
 		public ElementAccessContext() { }
 		public void copyFrom(ElementAccessContext ctx) {
 			super.copyFrom(ctx);
+			this.esArray = ctx.esArray;
+			this.esHash = ctx.esHash;
 		}
 	}
 	public static class ElemAccessASTContext extends ElementAccessContext {
@@ -1912,6 +1916,7 @@ public class Parser2 extends Parser {
 		public int cont = 0;
 		public boolean esPush = false;
 		public boolean esAF = false;
+		public boolean esArray = false;
 		public ExpressionListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1923,6 +1928,7 @@ public class Parser2 extends Parser {
 			this.cont = ctx.cont;
 			this.esPush = ctx.esPush;
 			this.esAF = ctx.esAF;
+			this.esArray = ctx.esArray;
 		}
 	}
 	public static class ExprListEmptyASTContext extends ExpressionListContext {
@@ -2005,6 +2011,7 @@ public class Parser2 extends Parser {
 	public static class MoreExpressionsContext extends ParserRuleContext {
 		public int cont = 0;
 		public boolean esAF = false;
+		public boolean esArray = false;
 		public MoreExpressionsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2015,6 +2022,7 @@ public class Parser2 extends Parser {
 			super.copyFrom(ctx);
 			this.cont = ctx.cont;
 			this.esAF = ctx.esAF;
+			this.esArray = ctx.esArray;
 		}
 	}
 	public static class MoreExprASTContext extends MoreExpressionsContext {
