@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
 
 
 public class Interpreter extends Parser2BaseVisitor {
@@ -35,6 +36,7 @@ public class Interpreter extends Parser2BaseVisitor {
             return v1/v2;
         }
         else if(op.equals("*")){
+            System.out.println("MULTIPLIQUÉ: "+v1 + " * " + v2);
             return v1*v2;
         }
         else if(op.equals(">")){
@@ -161,10 +163,11 @@ public class Interpreter extends Parser2BaseVisitor {
 
             if(!(ctx.compOperator().size()==1)){
                 for(int i = 0;i<=ctx.compOperator().size()-1;i++){
-                    visit(ctx.additionExpression(i+1));
+                    visit(ctx.additionExpression(i));//cambie esto att josue estaba i+1
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
                     if((v2 instanceof Integer)&&(v1 instanceof Integer)){
+
                         if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null){
                             Integer res =evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText());
                             if(res!=null){
@@ -209,11 +212,11 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitAddFactorAST(Parser2.AddFactorASTContext ctx) {
         if(!ctx.addOperator().isEmpty()){
-            visit(ctx.multiplicationExpression(0));
+            //visit(ctx.multiplicationExpression(0)); comenté esto att josue y sirvió bien sumar
 
             if(!(ctx.addOperator().size()==1)){
                 for(int i=0; i<= ctx.addOperator().size()-1; i++){
-                    visit(ctx.multiplicationExpression(i+1));
+                    visit(ctx.multiplicationExpression(i));//cambié esto att josue estaba i+1
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
                     if((v1 instanceof String)&&(v2 instanceof String)){
@@ -232,7 +235,7 @@ public class Interpreter extends Parser2BaseVisitor {
                         //MOSTRAR ERROR
                         break;
                     }
-
+                    this.evalStack.printStack();
                 }
             }else{
                 Object v2 = this.evalStack.popValue();
@@ -273,9 +276,11 @@ public class Interpreter extends Parser2BaseVisitor {
 
             if(!(ctx.mulOperator().size()==1)){
                 for(int i=0; i<= ctx.mulOperator().size()-1; i++){
-                    visit(ctx.elementExpression(i+1));
+                    System.out.println("Operador: "+ctx.mulOperator(i).getText());
+                    visit(ctx.elementExpression(i));//cambié esto att josue estaba i+1
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
+                    System.out.println("NUM1: "+(Integer) v2 + " - " + "NUM2: "+v1);
                     if((v2 instanceof Integer)&&(v1 instanceof Integer)){
                         if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
                             this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
@@ -309,7 +314,6 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
         visit(ctx.primitiveExpression());
         visit(ctx.callExpression());
-        //System.out.println("ASDADADSADASD +"this.evalStack.popValue());
         return null;
     }
 

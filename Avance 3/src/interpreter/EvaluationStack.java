@@ -19,4 +19,11 @@ public class EvaluationStack {
     public Object popValue(){
         return this.evalStack.pop();
     }
+
+    public void printStack(){
+        System.out.println("---------------IMPRIMIR STACK------------------");
+        evalStack.forEach(item->
+            System.out.println(item)
+        );
+    }
 }
