@@ -239,7 +239,6 @@ public class Ventana extends javax.swing.JFrame {
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser cargar = new JFileChooser();
-        cargar.setApproveButtonText("Cargar");
         File workingDirectory = new File(System.getProperty("user.dir"));
         cargar.setCurrentDirectory(workingDirectory);
         int result = cargar.showSaveDialog(this);

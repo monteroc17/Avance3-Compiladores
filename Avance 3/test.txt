@@ -1,3 +1,5 @@
 let dic={1:"holi",2:"como",3:"esta?",1:[1,2,3]};
 
-puts(dic[1]);
+puts(dic[[1,2,3]]);
+
+let lista=[1,2,3];
