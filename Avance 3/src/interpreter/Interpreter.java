@@ -103,7 +103,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitStLETAST(Parser2.StLETASTContext ctx) {
-        System.out.println("ENTRE!");
         visit(ctx.letStatement());
         return null;
     }
@@ -122,7 +121,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitLsAsignAST(Parser2.LsAsignASTContext ctx) {
-        System.out.println("ENTRE LSASIGN!");
         ctx.storageIndex=dataS.getActualStorageIndex();
         dataS.addData(ctx.identifier().getText(), new Object());
         visit(ctx.expression());
@@ -148,7 +146,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitExprAddAST(Parser2.ExprAddASTContext ctx) {
-        System.out.println("ENTRE! ADDEXP");
         visit(ctx.additionExpression());
         visit(ctx.comparison());
         return null;
@@ -201,7 +198,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitAddExprAST(Parser2.AddExprASTContext ctx) {
-        System.out.println("ENTRE! ADDEXP");
         visit(ctx.multiplicationExpression());
         visit(ctx.additionFactor());
         return null;
@@ -209,7 +205,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitAddFactorAST(Parser2.AddFactorASTContext ctx) {
-        System.out.println("ENTRE! ADDFACTOR");
         if(!ctx.addOperator().isEmpty()){
             visit(ctx.multiplicationExpression(0));
 
@@ -263,7 +258,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitMultExprAST(Parser2.MultExprASTContext ctx) {
-        System.out.println("ENTRE! MULTEXPR");
         visit(ctx.elementExpression());
         visit(ctx.multiplicationFactor());
         return null;
@@ -271,7 +265,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitMultFactorAST(Parser2.MultFactorASTContext ctx) {
-        System.out.println("ENTRE! MULFACTOR");
         if(!ctx.mulOperator().isEmpty()){
             visit(ctx.elementExpression(0));
 
@@ -299,7 +292,6 @@ public class Interpreter extends Parser2BaseVisitor {
                 }
             }
         }
-        System.out.println("SALI DE MUL FACTOR");
         return null;
     }
 
@@ -326,6 +318,12 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitElemAccessAST(Parser2.ElemAccessASTContext ctx) {
         visit(ctx.expression());
+        Object valor= this.evalStack.popValue();
+        Object lista= this.evalStack.popValue();
+        if(valor instanceof Integer){
+            if((Integer)valor<((ArrayList)lista).size())
+                this.evalStack.pushValue(((ArrayList) lista).get((Integer) valor));
+        }
         return null;
     }
 
@@ -349,7 +347,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
-        System.out.println("ID:"+ctx.identifier().getText());
         DataStorage.Value temp = dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex);
         this.evalStack.pushValue(temp.value);
         return null;

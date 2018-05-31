@@ -1,12 +1,7 @@
-let x=2;
-let fibonacci = fn(x) {
-if (x == 0) {
-0
-} else {
-if (x == 1) {
-1
-} else {
-fibonacci(x - 1) + fibonacci(x - 2);
-}
-}
-};
+let a=2;
+
+
+if(a>2){puts(2);}
+else{puts("holi");}
+
+
