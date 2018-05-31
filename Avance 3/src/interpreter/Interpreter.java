@@ -309,6 +309,7 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
         visit(ctx.primitiveExpression());
         visit(ctx.callExpression());
+        //System.out.println("ASDADADSADASD +"this.evalStack.popValue());
         return null;
     }
 
@@ -568,6 +569,7 @@ public class Interpreter extends Parser2BaseVisitor {
             Object elemento=this.evalStack.popValue();
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
+            System.out.println("ELEMENTO EXPRLISTMOREEXPR "+lista);
             this.evalStack.pushValue(lista);
             ctx.moreExpressions().esAF=false;
             visit(ctx.moreExpressions());
