@@ -36,7 +36,6 @@ public class Interpreter extends Parser2BaseVisitor {
             return v1/v2;
         }
         else if(op.equals("*")){
-            System.out.println("MULTIPLIQUÉ: "+v1 + " * " + v2);
             return v1*v2;
         }
         else if(op.equals(">")){
@@ -159,13 +158,14 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitCompAST(Parser2.CompASTContext ctx) {
         if(!ctx.compOperator().isEmpty()){
-            visit(ctx.additionExpression(0));
+            //visit(ctx.additionExpression(0)); cambie esto
 
             if(!(ctx.compOperator().size()==1)){
                 for(int i = 0;i<=ctx.compOperator().size()-1;i++){
                     visit(ctx.additionExpression(i));//cambie esto att josue estaba i+1
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
+
                     if((v2 instanceof Integer)&&(v1 instanceof Integer)){
 
                         if(evaluar((Integer) v1,(Integer) v2,ctx.compOperator(i).getText())!=null){
@@ -235,9 +235,9 @@ public class Interpreter extends Parser2BaseVisitor {
                         //MOSTRAR ERROR
                         break;
                     }
-                    this.evalStack.printStack();
                 }
             }else{
+                visit(ctx.multiplicationExpression(0));
                 Object v2 = this.evalStack.popValue();
                 Object v1 = this.evalStack.popValue();
                 if((v1 instanceof String)&&(v2 instanceof String)){
@@ -272,15 +272,13 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitMultFactorAST(Parser2.MultFactorASTContext ctx) {
         if(!ctx.mulOperator().isEmpty()){
-            visit(ctx.elementExpression(0));
+            //visit(ctx.elementExpression(0)); // esto lo cambie, no va aqui
 
             if(!(ctx.mulOperator().size()==1)){
                 for(int i=0; i<= ctx.mulOperator().size()-1; i++){
-                    System.out.println("Operador: "+ctx.mulOperator(i).getText());
                     visit(ctx.elementExpression(i));//cambié esto att josue estaba i+1
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
-                    System.out.println("NUM1: "+(Integer) v2 + " - " + "NUM2: "+v1);
                     if((v2 instanceof Integer)&&(v1 instanceof Integer)){
                         if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
                             this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
@@ -290,6 +288,7 @@ public class Interpreter extends Parser2BaseVisitor {
                     }
                 }
             } else {
+                visit(ctx.elementExpression(0));
                 Object v2 = this.evalStack.popValue();
                 Object v1 = this.evalStack.popValue();
                 if((v2 instanceof Integer)&&(v1 instanceof Integer)){
