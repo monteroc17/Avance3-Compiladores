@@ -14,7 +14,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.awt.*;
 import java.io.*;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -237,6 +239,28 @@ public class Ventana extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnRunActionPerformed
 
+    private void btnInterpretarInstruccionesActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnInterpretarInstruccionesActionPerformed
+        txtConsola.setText("Interpretación de Instrucciones");
+        try(FileWriter fw = new FileWriter("test.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(txtInstrucciones.getText());
+            //more code
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
+        }
+
+        try{
+
+            Interpreter interpreter = new Interpreter();
+            interpreter.visit(tree);
+            btnInterpretarInstrucciones.setEnabled(false);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
+
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser cargar = new JFileChooser();
         File workingDirectory = new File(System.getProperty("user.dir"));
@@ -274,17 +298,6 @@ public class Ventana extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnASTActionPerformed
-
-    private void btnInterpretarInstruccionesActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnInterpretarInstruccionesActionPerformed
-        txtConsola.setText("Interpretación de Instrucciones");
-        try{
-            Interpreter interpreter = new Interpreter();
-            interpreter.visit(tree);
-            btnInterpretarInstrucciones.setEnabled(false);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
 
     /*
     * Permite obtener la fila y columna del cursor actual.
