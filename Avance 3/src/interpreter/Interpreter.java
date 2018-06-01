@@ -21,9 +21,16 @@ public class Interpreter extends Parser2BaseVisitor {
     }
 
 
+    private boolean isInteger(Object element)
+    {
+        if(element instanceof  Integer)
+            return true;
+        else return false;
+    }
 
     private Integer evaluar(Integer v1, Integer v2, String op){
 
+        System.out.println(v1 + " - " + v2);
 
         if(op.equals("+")){
             System.out.println(v1+v2);
