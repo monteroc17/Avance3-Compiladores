@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -143,6 +144,11 @@ public class Ventana extends javax.swing.JFrame {
 
         txtInstrucciones.setColumns(20);
         txtInstrucciones.setRows(5);
+        txtInstrucciones.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtInstruccionesKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtInstrucciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -314,6 +320,38 @@ public class Ventana extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnASTActionPerformed
+
+    private void txtInstruccionesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInstruccionesKeyTyped
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try(PrintWriter writer = new PrintWriter("console.txt", "UTF-8"))
+            {
+                writer.println(txtInstrucciones.getText());
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            scanner = null;
+            parser = null;
+            input = null;
+            tokens = null;
+
+            try {
+                input = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
+                scanner = new Scanner(input);
+                tokens = new CommonTokenStream(scanner);
+                parser = new Parser2(tokens);
+            }
+            catch(Exception e){txtConsola.append(e.getMessage());}
+
+            try{
+                ParseTree tree2= parser.program();
+                interpreter.visit(tree2);
+                btnInterpretarInstrucciones.setEnabled(false);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_txtInstruccionesKeyTyped
 
     Action action = new AbstractAction()
     {
