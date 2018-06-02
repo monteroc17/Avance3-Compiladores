@@ -30,10 +30,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     private Integer evaluar(Integer v1, Integer v2, String op){
 
-        System.out.println(v1 + " - " + v2);
-
         if(op.equals("+")){
-            System.out.println(v1+v2);
             return v1+v2;
         }
         else if(op.equals("-")){
@@ -595,7 +592,6 @@ public class Interpreter extends Parser2BaseVisitor {
             Object elemento=this.evalStack.popValue();
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
-            System.out.println("ELEMENTO EXPRLISTMOREEXPR "+lista);
             this.evalStack.pushValue(lista);
             ctx.moreExpressions().esAF=false;
             visit(ctx.moreExpressions());
