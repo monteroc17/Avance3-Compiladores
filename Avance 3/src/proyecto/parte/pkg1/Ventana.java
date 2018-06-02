@@ -145,8 +145,8 @@ public class Ventana extends javax.swing.JFrame {
         txtInstrucciones.setColumns(20);
         txtInstrucciones.setRows(5);
         txtInstrucciones.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtInstruccionesKeyTyped(evt);
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtInstruccionesKeyPressed(evt);
             }
         });
         jScrollPane1.setViewportView(txtInstrucciones);
@@ -254,33 +254,33 @@ public class Ventana extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRunActionPerformed
 
     private void btnInterpretarInstruccionesActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnInterpretarInstruccionesActionPerformed
-        try(PrintWriter writer = new PrintWriter("console.txt", "UTF-8"))
-        {
-            writer.println(txtInstrucciones.getText());
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        scanner = null;
-        parser = null;
-        input = null;
-        tokens = null;
-
-        try {
-            input = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
-            scanner = new Scanner(input);
-            tokens = new CommonTokenStream(scanner);
-            parser = new Parser2(tokens);
-        }
-        catch(Exception e){txtConsola.append(e.getMessage());}
-
-        try{
-            ParseTree tree2= parser.program();
-            interpreter.visit(tree2);
-            btnInterpretarInstrucciones.setEnabled(false);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try(PrintWriter writer = new PrintWriter("console.txt", "UTF-8"))
+//        {
+//            writer.println(txtInstrucciones.getText());
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        scanner = null;
+//        parser = null;
+//        input = null;
+//        tokens = null;
+//
+//        try {
+//            input = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
+//            scanner = new Scanner(input);
+//            tokens = new CommonTokenStream(scanner);
+//            parser = new Parser2(tokens);
+//        }
+//        catch(Exception e){txtConsola.append(e.getMessage());}
+//
+//        try{
+//            ParseTree tree2= parser.program();
+//            interpreter.visit(tree2);
+//            btnInterpretarInstrucciones.setEnabled(false);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }//GEN-LAST:event_btnInterpretarInstruccionesActionPerformed
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
@@ -321,8 +321,10 @@ public class Ventana extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnASTActionPerformed
 
-    private void txtInstruccionesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInstruccionesKeyTyped
+    private void txtInstruccionesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInstruccionesKeyTyped
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            evt.consume();
+            txtConsola.append("\n"+txtInstrucciones.getText()+"->");
             try(PrintWriter writer = new PrintWriter("console.txt", "UTF-8"))
             {
                 writer.println(txtInstrucciones.getText());
@@ -350,6 +352,7 @@ public class Ventana extends javax.swing.JFrame {
             }catch (Exception e){
                 e.printStackTrace();
             }
+            txtInstrucciones.setText("");
         }
     }//GEN-LAST:event_txtInstruccionesKeyTyped
 
