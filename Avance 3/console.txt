@@ -1,1 +1,1 @@
-puts(a*(a+a))
+let a = a+1;
