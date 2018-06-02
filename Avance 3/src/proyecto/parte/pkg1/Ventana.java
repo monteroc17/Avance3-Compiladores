@@ -34,6 +34,7 @@ public class Ventana extends javax.swing.JFrame {
     File archivo;
     ParseTree tree;
     Parser2 parser;
+    Interpreter interpreter;
     java.util.concurrent.Future<JFrame> treeGUI;
     public Ventana() {
         initComponents();
@@ -229,10 +230,12 @@ public class Ventana extends javax.swing.JFrame {
             Checker checker = new Checker();
             checker.visit(tree);
             System.out.println("Compilacion Exitosa!");
+            interpreter = new Interpreter();
+            interpreter.visit(tree);
             btnInterpretarInstrucciones.setEnabled(true);
 
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
 
@@ -240,21 +243,29 @@ public class Ventana extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRunActionPerformed
 
     private void btnInterpretarInstruccionesActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnInterpretarInstruccionesActionPerformed
-        txtConsola.setText("Interpretación de Instrucciones");
-        try(FileWriter fw = new FileWriter("test.txt", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw))
+        try(PrintWriter writer = new PrintWriter("console.txt", "UTF-8"))
         {
-            out.println(txtInstrucciones.getText());
-            //more code
+            writer.println(txtInstrucciones.getText());
+            writer.close();
         } catch (IOException e) {
-            //exception handling left as an exercise for the reader
+            e.printStackTrace();
         }
+        Scanner scanner2 = null;
+        Parser parser2 = null;
+        ANTLRInputStream input2 = null;
+        CommonTokenStream tokens2 = null;
+
+        try {
+            input2 = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
+            scanner2 = new Scanner(input2);
+            tokens2 = new CommonTokenStream(scanner2);
+            parser2 = new Parser2(tokens2);
+        }
+        catch(Exception e){txtConsola.append(e.getMessage());}
 
         try{
-
-            Interpreter interpreter = new Interpreter();
-            interpreter.visit(tree);
+            ParseTree tree2= parser2.program();
+            interpreter.visit(tree2);
             btnInterpretarInstrucciones.setEnabled(false);
         }catch (Exception e){
             e.printStackTrace();

@@ -134,11 +134,16 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitLsAsignAST(Parser2.LsAsignASTContext ctx) {
         ctx.storageIndex=dataS.getActualStorageIndex();
         dataS.addData(ctx.identifier().getText(), new Object());
-        visit(ctx.expression());
-        Object val =  evalStack.popValue();
-        //CAMBIAR EL VALOR EN EL ALMACEN
-        //dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
-        dataS.getData(ctx.identifier().getText()).value=val;
+        if(ctx.expression().start.getText().equals("fn")){//si es una función no se guarda el ctx
+            dataS.getData(ctx.identifier().getText()).value=ctx.expression().getText();
+        }else {
+            visit(ctx.expression());
+            Object val =  evalStack.popValue();
+            //CAMBIAR EL VALOR EN EL ALMACEN
+            //dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
+            dataS.getData(ctx.identifier().getText()).value=val;
+        }
+
         System.out.println(this.dataS.toString());
         return null;
     }
@@ -360,6 +365,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitCallExprAST(Parser2.CallExprASTContext ctx) {
+        //Abrir Scope
         visit(ctx.expressionList());
         return null;
     }
@@ -534,12 +540,22 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
-        visit(ctx.moreIdentifiers());
+        if(this.dataS.getData(ctx.identifier().getText())!=null)
+            visit(ctx.moreIdentifiers());
+        else {
+            //Error
+        }
         return null;
     }
 
     @Override
     public Object visitMoreIdentsAST(Parser2.MoreIdentsASTContext ctx) {
+        for(Parser2.IdentifierContext id: ctx.identifier()){
+            if(this.dataS.getData(id.getText())==null){
+                //Error
+                break;
+            }
+        }
         return null;
     }
 
