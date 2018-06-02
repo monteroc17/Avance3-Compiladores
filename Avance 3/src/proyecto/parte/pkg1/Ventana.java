@@ -85,12 +85,12 @@ public class Ventana extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnLoad = new javax.swing.JButton();
         btnAST = new javax.swing.JButton();
-        btnInterpretarInstrucciones = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtCodigo = new javax.swing.JTextPane();
         lblLine = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtInstrucciones = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador Sintáctico");
@@ -123,16 +123,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        
-        btnInterpretarInstrucciones.setText("Interpretar Instrucciones");
-        btnInterpretarInstrucciones.setEnabled(false);
-        btnInterpretarInstrucciones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInterpretarInstruccionesActionPerformed(evt);
-            }
-        });
-
-        txtCodigo.setText("");
+        txtCodigo.setText("let age = 1;\nlet name = \"Monkey\";\nlet result = 10 * (20 / 2);\n\nlet myArray = [1, 2, 3, 4, 5];\n\nlet thorsten = {\"name\": \"Thorsten\", \"age\": 28};\n\nmyArray[0] // => 1\nthorsten[\"name\"] // => \"Thorsten\"\n\nlet add = fn(a, b) { return a + b; };\n\nlet fibonacci = fn(x) {\nif (x == 0) {\n0\n} else {\nif (x == 1) {\n1\n} else {\nfibonacci(x - 1) + fibonacci(x - 2);\n}\n}\n};\n");
         txtCodigo.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 txtCodigoCaretUpdate(evt);
@@ -144,12 +135,10 @@ public class Ventana extends javax.swing.JFrame {
 
         txtInstrucciones.setColumns(20);
         txtInstrucciones.setRows(5);
-        txtInstrucciones.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtInstruccionesKeyPressed(evt);
-            }
-        });
         jScrollPane1.setViewportView(txtInstrucciones);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setText(">>");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,14 +156,13 @@ public class Ventana extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAST, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 827, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblLine, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnInterpretarInstrucciones, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblLine)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -189,14 +177,12 @@ public class Ventana extends javax.swing.JFrame {
                     .addComponent(btnLoad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRun, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnInterpretarInstrucciones, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(lblLine))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblLine)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -432,10 +418,10 @@ public class Ventana extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAST;
-    private javax.swing.JButton btnInterpretarInstrucciones;
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnRun;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
