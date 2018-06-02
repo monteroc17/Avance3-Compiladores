@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,6 +37,9 @@ public class Ventana extends javax.swing.JFrame {
     Parser2 parser;
     Interpreter interpreter;
     java.util.concurrent.Future<JFrame> treeGUI;
+    Scanner scanner;
+    ANTLRInputStream input;
+    CommonTokenStream tokens;
     public Ventana() {
         initComponents();
         
@@ -118,6 +122,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        
         btnInterpretarInstrucciones.setText("Interpretar Instrucciones");
         btnInterpretarInstrucciones.setEnabled(false);
         btnInterpretarInstrucciones.addActionListener(new java.awt.event.ActionListener() {
@@ -209,10 +214,10 @@ public class Ventana extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        Scanner scanner = null;
+        scanner = null;
         parser = null;
-        ANTLRInputStream input=null;
-        CommonTokenStream tokens = null;
+        input=null;
+        tokens = null;
         try {
             input = new ANTLRInputStream(new FileReader("test.txt"));//archivo.getAbsolutePath()));
             scanner = new Scanner(input);
@@ -250,21 +255,21 @@ public class Ventana extends javax.swing.JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Scanner scanner2 = null;
-        Parser parser2 = null;
-        ANTLRInputStream input2 = null;
-        CommonTokenStream tokens2 = null;
+        scanner = null;
+        parser = null;
+        input = null;
+        tokens = null;
 
         try {
-            input2 = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
-            scanner2 = new Scanner(input2);
-            tokens2 = new CommonTokenStream(scanner2);
-            parser2 = new Parser2(tokens2);
+            input = new ANTLRInputStream(new FileReader("console.txt"));//archivo.getAbsolutePath()));
+            scanner = new Scanner(input);
+            tokens = new CommonTokenStream(scanner);
+            parser = new Parser2(tokens);
         }
         catch(Exception e){txtConsola.append(e.getMessage());}
 
         try{
-            ParseTree tree2= parser2.program();
+            ParseTree tree2= parser.program();
             interpreter.visit(tree2);
             btnInterpretarInstrucciones.setEnabled(false);
         }catch (Exception e){
@@ -309,6 +314,15 @@ public class Ventana extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnASTActionPerformed
+
+    Action action = new AbstractAction()
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            System.out.println("some action");
+        }
+    };
 
     /*
     * Permite obtener la fila y columna del cursor actual.

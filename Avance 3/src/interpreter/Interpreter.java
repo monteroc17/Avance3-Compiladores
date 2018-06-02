@@ -384,7 +384,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
-        DataStorage.Value temp = dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex);
+        DataStorage.Value temp = dataS.getData(ctx.identifier().getText());
         this.evalStack.pushValue(temp.value);
         return null;
     }
