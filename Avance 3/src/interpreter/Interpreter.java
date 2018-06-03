@@ -564,27 +564,27 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
-        if(this.dataS.getData(ctx.identifier().getText())!=null){
+        //if(this.dataS.getData(ctx.identifier().getText())!=null){
             this.dataS.addData(ctx.identifier().getText(),this.evalStack.popValue());
             ctx.cont++;
             ctx.moreIdentifiers().cont=0;
             visit(ctx.moreIdentifiers());
             ctx.cont+=ctx.moreIdentifiers().cont;
-        }
+        //}
 
-        else {
-            System.out.println("Parametros no existente, verifique su validez primero");
-        }
+//        else {
+//            System.out.println("Parametros no existente, verifique su validez primero");
+//        }
         return null;
     }
 
     @Override
     public Object visitMoreIdentsAST(Parser2.MoreIdentsASTContext ctx) {
         for(Parser2.IdentifierContext id: ctx.identifier()){
-            if(this.dataS.getData(id.getText())==null){
-                System.out.println("Parametros no existente, verifique su validez primero");
-                break;
-            }
+//            if(this.dataS.getData(id.getText())==null){
+//                System.out.println("Parametros no existente, verifique su validez primero");
+//                break;
+//            }
             this.dataS.addData(id.getText(),this.evalStack.popValue());
             ctx.cont++;
         }

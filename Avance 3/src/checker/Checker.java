@@ -532,12 +532,13 @@ public class Checker extends Parser2BaseVisitor{
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
         SymbolTable.Ident i = this.tablaIDs.buscar(ctx.identifier().getText());
         if(i==null){
-            System.out.println(Print_Errors(6,((Token) ctx.identifier()).getLine(),((Token) ctx.identifier()).getCharPositionInLine())+"=>"+ctx.identifier().getText());
-            return -1;
+//            System.out.println(Print_Errors(6,((Token) ctx.identifier()).getLine(),((Token) ctx.identifier()).getCharPositionInLine())+"=>"+ctx.identifier().getText());
+//            return -1;
+            this.tablaIDs.insertar(ctx.identifier().getText(),0,ctx);
         }
-        else{
+        //else{
             return visit(ctx.moreIdentifiers());
-        }
+        //}
     }
 
     @Override
@@ -545,9 +546,11 @@ public class Checker extends Parser2BaseVisitor{
         for(int i = 0;i < ctx.identifier().size(); i++){
             SymbolTable.Ident id = this.tablaIDs.buscar(ctx.identifier(i).getText());
             if(id==null){
-                System.out.println(Print_Errors(6,((Token) ctx.identifier()).getLine(),((Token) ctx.identifier()).getCharPositionInLine())+"=>"+ctx.identifier(i).getText());
-                return -1;
+//                System.out.println(Print_Errors(6,((Token) ctx.identifier()).getLine(),((Token) ctx.identifier()).getCharPositionInLine())+"=>"+ctx.identifier(i).getText());
+//                return -1;
+                this.tablaIDs.insertar(ctx.identifier(i).getText(),0,ctx);
             }
+            visit(ctx.identifier(i));
         }
         return 0;
     }
