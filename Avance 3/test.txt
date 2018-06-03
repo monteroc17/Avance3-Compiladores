@@ -1,15 +1,14 @@
-let textoA = "esto es una prueba";
 
-let lista = [1,"persona",false,200,textoA,fn(x){puts(a+a)}];
 
-puts(lista[1]);//imprime el texto "persona"
-puts(lista[4]);//imprime la variable con el texto "esto es una prueba"
 
-push(lista,30+12);//inserta un nuevo elemento en la lista
-len(lista);//obtiene el tamaño de la lista
-rest(lista);//obtiene todos los elementos de la lista excepto el primero
-last(lista);//obtiene el ultimo elemento de la lista
-first(lista);//obtiene el primer elemento de la lista
 
-//let funcion = last(lista);//se debe igualar en otra variable el valor de la funcion ubicada en la lista
-//puts(funcion(5)); // y luego ya se puede acceder a la funcion y enviarle los parametros solicitados
+let variableA = 32;
+let variableB = "Esto es una prueba";
+let lista = [1,2,3,4,5];
+let diccionario = {"nombre":"Carolina","apellido":"Alarcón"};
+
+let funcion = fn(x,y)
+{
+   let a = x+y;
+   puts(a*x*y);
+}
