@@ -30,7 +30,7 @@ public class DataStorage {
     {
         Value v = new Value(nombre,value,this.actualIndex);
         this.data.add(v);
-        this.actualIndex++;
+        //this.actualIndex++;
     }
 
     public Value getData(int index) {
@@ -45,6 +45,22 @@ public class DataStorage {
         }
 
         return null;
+    }
+
+    public void openScope(){
+        this.actualIndex++;
+    }
+
+    public void closeScope(){
+        Value element = this.data.get(0);
+        while (element != null && element.index == actualIndex){
+            data.pop();
+            if(!this.data.isEmpty())
+                element = this.data.get(0);
+            else
+                element= null;
+        }
+        this.actualIndex--;
     }
 
     public void cleanData(){

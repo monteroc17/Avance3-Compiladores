@@ -132,7 +132,7 @@ public class Interpreter extends Parser2BaseVisitor {
         ctx.storageIndex=dataS.getActualStorageIndex();
         dataS.addData(ctx.identifier().getText(), new Object());
         if(ctx.expression().start.getText().equals("fn")){//si es una función no se guarda el ctx
-            dataS.getData(ctx.identifier().getText()).value=ctx.expression().getText();
+            dataS.getData(ctx.identifier().getText()).value=ctx.expression();
         }else {
             visit(ctx.expression());
             Object val =  evalStack.popValue();
@@ -193,6 +193,7 @@ public class Interpreter extends Parser2BaseVisitor {
                     }
                 }
             } else{
+                visit(ctx.additionExpression(0));
                 Object v2 = this.evalStack.popValue();
                 Object v1 = this.evalStack.popValue();
                 if((v2 instanceof Integer)&&(v1 instanceof Integer)){
@@ -320,8 +321,13 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
-        visit(ctx.primitiveExpression());
-        visit(ctx.callExpression());
+        //visit(ctx.primitiveExpression());
+        if(this.dataS.getData(ctx.primitiveExpression().getText())!=null){//si la variable existe
+            visit((Parser2.ExprAddASTContext)this.dataS.getData(ctx.primitiveExpression().getText()).value);//Visita la función
+        } else {
+            //ERROR La variable no existe
+        }
+        //visit(ctx.callExpression());
         return null;
     }
 
@@ -530,8 +536,10 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitFuncLitAST(Parser2.FuncLitASTContext ctx) {
+        this.dataS.openScope();
         visit(ctx.functionParameters());
         visit(ctx.blockStatement());
+        this.dataS.closeScope();
         return null;
     }
 
@@ -637,9 +645,17 @@ public class Interpreter extends Parser2BaseVisitor {
         Object expression = this.evalStack.popValue();
         if(expression instanceof Boolean){//se verifica si la expresion es booleana
             Boolean esTrue= (Boolean) expression;
-            if (esTrue)
+            if (esTrue){
+                this.dataS.openScope();
                 visit(ctx.blockStatement(0));
-            else if(!esTrue && ctx.blockStatement().size()==2) visit(ctx.blockStatement(1));
+                this.dataS.closeScope();
+            }
+
+            else if(!esTrue && ctx.blockStatement().size()==2) {
+                this.dataS.openScope();
+                visit(ctx.blockStatement(1));
+                this.dataS.closeScope();
+            }
         }
 
 

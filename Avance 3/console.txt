@@ -1,1 +1,1 @@
-puts(a*(a+a))
+funcion(1);
