@@ -10,6 +10,7 @@ import java.util.*;
 
 
 public class Interpreter extends Parser2BaseVisitor {
+    private int cantParametros;
     private DataStorage dataS = null;
     private EvaluationStack evalStack=null;
     public Interpreter(){
@@ -321,6 +322,7 @@ public class Interpreter extends Parser2BaseVisitor {
         //visit(ctx.primitiveExpression());
         if(this.dataS.getData(ctx.primitiveExpression().getText())!=null){//si la variable existe
             visit(ctx.callExpression());
+            this.cantParametros=ctx.callExpression().cont;
             ArrayList temp=new ArrayList<>();
             //para acomodar los parametros en el orden correcto
             for(int i=0; i<ctx.callExpression().cont;i++){
@@ -545,10 +547,18 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitFuncLitAST(Parser2.FuncLitASTContext ctx) {
+
         this.dataS.openScope();
         visit(ctx.functionParameters());
-        visit(ctx.blockStatement());
+        ctx.cont+=ctx.functionParameters().cont;
+        if(this.cantParametros==ctx.cont)
+            visit(ctx.blockStatement());
+        else
+            System.out.println("Se esperaban "+ctx.cont+" parámetros, se obtuvieron "+this.cantParametros);
         this.dataS.closeScope();
+        ctx.cont=0;
+        this.cantParametros=0;
+        ctx.functionParameters().cont=0;
         return null;
     }
 
@@ -557,6 +567,7 @@ public class Interpreter extends Parser2BaseVisitor {
         if(this.dataS.getData(ctx.identifier().getText())!=null){
             this.dataS.addData(ctx.identifier().getText(),this.evalStack.popValue());
             ctx.cont++;
+            ctx.moreIdentifiers().cont=0;
             visit(ctx.moreIdentifiers());
             ctx.cont+=ctx.moreIdentifiers().cont;
         }
@@ -657,7 +668,11 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitPrintExprAST(Parser2.PrintExprASTContext ctx) {
         visit(ctx.expression());
-        System.out.println(this.evalStack.popValue());
+        this.evalStack.printStack();
+        try {
+            System.out.println(this.evalStack.popValue());
+        } catch (java.util.EmptyStackException e){}
+
         return null;
     }
 
