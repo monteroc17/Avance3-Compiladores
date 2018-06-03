@@ -139,6 +139,7 @@ public class Ventana extends javax.swing.JFrame {
                 txtInstruccionesKeyPressed(evt);
             }
         });
+        txtInstrucciones.setEnabled(false);
         jScrollPane1.setViewportView(txtInstrucciones);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -235,6 +236,7 @@ public class Ventana extends javax.swing.JFrame {
             System.out.println("Compilacion Exitosa!");
             interpreter = new Interpreter();
             interpreter.visit(tree);
+            txtInstrucciones.setEnabled(true);
 
         }catch (Exception e){
             e.printStackTrace();
