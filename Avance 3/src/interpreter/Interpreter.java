@@ -6,10 +6,7 @@ import generated.Parser2BaseVisitor;
 
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.*;
 
 
 public class Interpreter extends Parser2BaseVisitor {
@@ -323,11 +320,20 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
         //visit(ctx.primitiveExpression());
         if(this.dataS.getData(ctx.primitiveExpression().getText())!=null){//si la variable existe
+            visit(ctx.callExpression());
+            ArrayList temp=new ArrayList<>();
+            //para acomodar los parametros en el orden correcto
+            for(int i=0; i<ctx.callExpression().cont;i++){
+                temp.add(this.evalStack.popValue());
+            }
+            while (!temp.isEmpty()){
+                this.evalStack.pushValue(temp.get(0));
+                temp.remove(0);
+            }
             visit((Parser2.ExprAddASTContext)this.dataS.getData(ctx.primitiveExpression().getText()).value);//Visita la función
         } else {
             //ERROR La variable no existe
         }
-        //visit(ctx.callExpression());
         return null;
     }
 
@@ -368,8 +374,9 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitCallExprAST(Parser2.CallExprASTContext ctx) {
-        //Abrir Scope
+
         visit(ctx.expressionList());
+        ctx.cont+=ctx.expressionList().cont;
         return null;
     }
 
@@ -388,7 +395,9 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitPExprIDAST(Parser2.PExprIDASTContext ctx) {
         DataStorage.Value temp = dataS.getData(ctx.identifier().getText());
-        this.evalStack.pushValue(temp.value);
+        if(temp!=null)
+            this.evalStack.pushValue(temp.value);
+        else System.out.println("Ese identificador no existe!");
         return null;
     }
 
@@ -545,8 +554,13 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
-        if(this.dataS.getData(ctx.identifier().getText())!=null)
+        if(this.dataS.getData(ctx.identifier().getText())!=null){
+            this.dataS.addData(ctx.identifier().getText(),this.evalStack.popValue());
+            ctx.cont++;
             visit(ctx.moreIdentifiers());
+            ctx.cont+=ctx.moreIdentifiers().cont;
+        }
+
         else {
             //Error
         }
@@ -560,6 +574,8 @@ public class Interpreter extends Parser2BaseVisitor {
                 //Error
                 break;
             }
+            this.dataS.addData(id.getText(),this.evalStack.popValue());
+            ctx.cont++;
         }
         return null;
     }
@@ -606,6 +622,12 @@ public class Interpreter extends Parser2BaseVisitor {
         } else if(ctx.esAF) {
             ctx.moreExpressions().esAF=true;
             visit(ctx.moreExpressions());
+        } else {//si es funcion
+            ctx.esAF=false;
+            ctx.esArray=false;
+            ctx.cont++;
+            visit(ctx.moreExpressions());
+            ctx.cont+=ctx.moreExpressions().cont;
         }
         return null;
     }
@@ -619,11 +641,13 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitMoreExprAST(Parser2.MoreExprASTContext ctx) {
         for(int i = 0; i< ctx.expression().size();i++){
             visit(ctx.expression(i));
-            if(!ctx.esAF){//si es una lista, se tienen que agregar los datos a la lista
+            if(ctx.esArray){//si es una lista, se tienen que agregar los datos a la lista
                 Object elemento=this.evalStack.popValue();
                 ArrayList lista=(ArrayList) this.evalStack.popValue();
                 lista.add(elemento);
                 this.evalStack.pushValue(lista);
+            } else if(!(ctx.esAF) && !(ctx.esArray)){
+                ctx.cont++;
             }
 
         }

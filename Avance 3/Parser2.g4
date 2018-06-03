@@ -41,7 +41,8 @@ elementExpression:  (primitiveExpression elementAccess)                         
 elementAccess locals [boolean esArray=false, boolean esHash=false]
              : PARCUADIZQ expression PARCUADDER                                    #elemAccessAST
 ;
-callExpression : PARIZQ expressionList PARDER                                      #callExprAST
+callExpression locals[int cont=0]
+                : PARIZQ expressionList PARDER                                      #callExprAST
 ;
 primitiveExpression:
       INT                                                                           #pExprINTAST
@@ -72,11 +73,14 @@ locals [boolean push = false,
 ;
 arrayLiteral : PARCUADIZQ expressionList PARCUADDER                                 #arrayLitAST
 ;
-functionLiteral : FN PARIZQ functionParameters PARDER blockStatement                #funcLitAST
+functionLiteral locals [int cont=0]
+                : FN PARIZQ functionParameters PARDER blockStatement                #funcLitAST
 ;
-functionParameters	: identifier moreIdentifiers                                            #funcParamAST
+functionParameters locals [int cont=0]
+            : identifier moreIdentifiers                                            #funcParamAST
 ;
-moreIdentifiers	: (COMA identifier)*                                                #moreIdentsAST
+moreIdentifiers	locals [int cont=0]
+                : (COMA identifier)*                                                #moreIdentsAST
 ;
 hashLiteral		: CORCHETEIZQ hashContent moreHashContent CORCHETEDER               #hashLitAST
 ;

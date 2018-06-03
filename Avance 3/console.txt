@@ -1,1 +1,1 @@
-funcion(1);
+funcion(0)

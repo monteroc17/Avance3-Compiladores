@@ -1055,6 +1055,7 @@ public class Parser2 extends Parser {
 	}
 
 	public static class CallExpressionContext extends ParserRuleContext {
+		public int cont = 0;
 		public CallExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1063,6 +1064,7 @@ public class Parser2 extends Parser {
 		public CallExpressionContext() { }
 		public void copyFrom(CallExpressionContext ctx) {
 			super.copyFrom(ctx);
+			this.cont = ctx.cont;
 		}
 	}
 	public static class CallExprASTContext extends CallExpressionContext {
@@ -1561,6 +1563,7 @@ public class Parser2 extends Parser {
 	}
 
 	public static class FunctionLiteralContext extends ParserRuleContext {
+		public int cont = 0;
 		public FunctionLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1569,6 +1572,7 @@ public class Parser2 extends Parser {
 		public FunctionLiteralContext() { }
 		public void copyFrom(FunctionLiteralContext ctx) {
 			super.copyFrom(ctx);
+			this.cont = ctx.cont;
 		}
 	}
 	public static class FuncLitASTContext extends FunctionLiteralContext {
@@ -1620,6 +1624,7 @@ public class Parser2 extends Parser {
 	}
 
 	public static class FunctionParametersContext extends ParserRuleContext {
+		public int cont = 0;
 		public FunctionParametersContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1628,6 +1633,7 @@ public class Parser2 extends Parser {
 		public FunctionParametersContext() { }
 		public void copyFrom(FunctionParametersContext ctx) {
 			super.copyFrom(ctx);
+			this.cont = ctx.cont;
 		}
 	}
 	public static class FuncParamASTContext extends FunctionParametersContext {
@@ -1670,6 +1676,7 @@ public class Parser2 extends Parser {
 	}
 
 	public static class MoreIdentifiersContext extends ParserRuleContext {
+		public int cont = 0;
 		public MoreIdentifiersContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1678,6 +1685,7 @@ public class Parser2 extends Parser {
 		public MoreIdentifiersContext() { }
 		public void copyFrom(MoreIdentifiersContext ctx) {
 			super.copyFrom(ctx);
+			this.cont = ctx.cont;
 		}
 	}
 	public static class MoreIdentsASTContext extends MoreIdentifiersContext {

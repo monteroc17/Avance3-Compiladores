@@ -38,13 +38,21 @@ public class DataStorage {
     }
 
     public Value getData(String name) {
+        Value res= null;
+        int currentScope=0;
         for(Value ele: this.data){
             if (ele.name.equals(name)){
-                return ele;
+                //Se tiene que buscar la variable que este en el scope mas cercano al actual, si no es el actual
+                if(ele.index==this.getActualStorageIndex())
+                    return ele;
+                if(ele.index>=currentScope){
+                    res=ele;
+                    currentScope=ele.index;
+                }
             }
         }
+        return res;
 
-        return null;
     }
 
     public void openScope(){
@@ -52,14 +60,20 @@ public class DataStorage {
     }
 
     public void closeScope(){
-        Value element = this.data.get(0);
-        while (element != null && element.index == actualIndex){
-            data.pop();
-            if(!this.data.isEmpty())
-                element = this.data.get(0);
-            else
-                element= null;
+        for(int i=0;i<this.data.size();i++){
+            if(this.data.get(i).index==this.getActualStorageIndex()){
+                this.data.remove(i);
+            }
         }
+//
+//        Value element = this.data.get(0);
+//        while (element != null && element.index == actualIndex){
+//            data.pop();
+//            if(!this.data.isEmpty())
+//                element = this.data.get(0);
+//            else
+//                element= null;
+//        }
         this.actualIndex--;
     }
 
@@ -74,7 +88,7 @@ public class DataStorage {
         message += "****** ESTADO DE DATA STORAGE ******\n";
         if (!this.data.isEmpty()) {
             for (Value i : this.data) {
-                message += i.name + " --> " + i.value.toString() + "\n";
+                message += i.name + " --> " + i.value.toString() + "Scope: " + i.index + "\n";
             }
             message += "------------------------------------------";
         } else

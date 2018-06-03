@@ -91,7 +91,7 @@ public class Checker extends Parser2BaseVisitor{
                     tipo=0;//transformela a neutro
                 this.tablaIDs.insertar( ctx.identifier().getText(),tipo,ctx);
                 //this.tablaIDs.insertar(((Token) ctx.identifier()),tipo,ctx);
-                this.tablaIDs.imprimir();
+                //this.tablaIDs.imprimir();
             }
         }
         return tipo;
