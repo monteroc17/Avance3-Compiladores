@@ -132,11 +132,13 @@ public class Interpreter extends Parser2BaseVisitor {
         if(ctx.expression().start.getText().equals("fn")){//si es una función no se guarda el ctx
             dataS.getData(ctx.identifier().getText()).value=ctx.expression();
         }else {
-            visit(ctx.expression());
-            Object val =  evalStack.popValue();
-            //CAMBIAR EL VALOR EN EL ALMACEN
-            //dataS.getData(((Parser2.LsAsignASTContext)ctx.identifier().decl).storageIndex).value=val;
-            dataS.getData(ctx.identifier().getText()).value=val;
+
+            try{
+                visit(ctx.expression());
+                Object val =  evalStack.popValue();
+                dataS.getData(ctx.identifier().getText()).value=val;
+            }catch (java.util.EmptyStackException e){}
+
         }
 
         System.out.println(this.dataS.toString());
@@ -354,6 +356,9 @@ public class Interpreter extends Parser2BaseVisitor {
             if(valor instanceof Integer){
                 if((Integer)valor<((ArrayList)lista).size())
                     this.evalStack.pushValue(((ArrayList) lista).get((Integer) valor));
+                else {
+                    System.out.println("Índice fuera de rango");
+                }
             }
         } else if(lista instanceof HashMap){
             HashMap dic=(HashMap) lista;
@@ -622,13 +627,17 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitExprListMoreExprAST(Parser2.ExprListMoreExprASTContext ctx) {
-        visit(ctx.expression());
+        if(ctx.expression().start.getText().equals("fn")){
+            this.evalStack.pushValue(ctx.expression());
+        }else
+            visit(ctx.expression());
         if(ctx.esArray){
             Object elemento=this.evalStack.popValue();
             ArrayList lista=(ArrayList) this.evalStack.popValue();
             lista.add(elemento);
             this.evalStack.pushValue(lista);
             ctx.moreExpressions().esAF=false;
+            ctx.moreExpressions().esArray=true;
             visit(ctx.moreExpressions());
         } else if(ctx.esAF) {
             ctx.moreExpressions().esAF=true;
@@ -651,7 +660,11 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitMoreExprAST(Parser2.MoreExprASTContext ctx) {
         for(int i = 0; i< ctx.expression().size();i++){
-            visit(ctx.expression(i));
+            if(ctx.expression(i).start.getText().equals("fn")){
+                //System.out.println("Se esta guardando: "+ctx.expression(i).getText());
+                this.evalStack.pushValue(ctx.expression(i));
+            }else
+                visit(ctx.expression(i));
             if(ctx.esArray){//si es una lista, se tienen que agregar los datos a la lista
                 Object elemento=this.evalStack.popValue();
                 ArrayList lista=(ArrayList) this.evalStack.popValue();
@@ -678,7 +691,6 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitIfExprAST(Parser2.IfExprASTContext ctx) {
-        //ESTA SOLUCIÓN NO ES DEFINITIVA!!! se tiene que revisar
         visit(ctx.expression());
         //se saca el valor de esa expresion
         Object expression = this.evalStack.popValue();
@@ -708,7 +720,7 @@ public class Interpreter extends Parser2BaseVisitor {
             if(ele.start.getText().equals("return")){
                 ctx.returns=true;
                 //Reingresar el valor que de el retorno para asignarselo a la funcion. PREGUNTAR SI ES ASI---------------------
-                this.evalStack.pushValue(this.dataS.getData().getLast().value);
+                //this.evalStack.pushValue(this.dataS.getData().getLast().value);
                 break;
             }
         }
