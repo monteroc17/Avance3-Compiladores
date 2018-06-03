@@ -188,7 +188,7 @@ public class Interpreter extends Parser2BaseVisitor {
                         }
                     }
                     else {
-                        //MOSTRAR ERROR
+                        System.out.println("Error al comparar valores, compatibilidad no válida");
                         break;
                     }
                 }
@@ -242,7 +242,7 @@ public class Interpreter extends Parser2BaseVisitor {
                         if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText())!=null)
                             this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(i).getText()));
                     }else {
-                        //MOSTRAR ERROR
+                        System.out.println("Error de tipos, no es posible operar valores incompatibles");
                         break;
                     }
                 }
@@ -263,7 +263,7 @@ public class Interpreter extends Parser2BaseVisitor {
                     if(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(0).getText())!=null)
                         this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.addOperator(0).getText()));
                 }else {
-                    //MOSTRAR ERROR
+                    System.out.println("Error de tipos, no es posible operar valores incompatibles");
 
                 }
             }
@@ -293,7 +293,7 @@ public class Interpreter extends Parser2BaseVisitor {
                         if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText())!=null)
                             this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(i).getText()));
                     }else {
-                        //MOSTRAR ERROR
+                        System.out.println("Error de tipos, no es posible operar valores incompatibles ");
                         break;
                     }
                 }
@@ -305,7 +305,7 @@ public class Interpreter extends Parser2BaseVisitor {
                     if(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(0).getText())!=null)
                         this.evalStack.pushValue(evaluar((Integer) v1,(Integer) v2,ctx.mulOperator(0).getText()));
                 }else {
-                    //MOSTRAR ERROR
+                    System.out.println("Error de tipos, no es posible operar valores incompatibles ");
                 }
             }
         }
@@ -325,7 +325,7 @@ public class Interpreter extends Parser2BaseVisitor {
         if(this.dataS.getData(ctx.primitiveExpression().getText())!=null){//si la variable existe
             visit((Parser2.ExprAddASTContext)this.dataS.getData(ctx.primitiveExpression().getText()).value);//Visita la función
         } else {
-            //ERROR La variable no existe
+            System.out.println("Error, variable no existente");
         }
         //visit(ctx.callExpression());
         return null;
@@ -430,7 +430,7 @@ public class Interpreter extends Parser2BaseVisitor {
                 ((ArrayList) lista).add(valor);
                 this.evalStack.pushValue(lista);
             } else{
-                //Error
+                System.out.println("No es posible agregar valor a la lista");
             }
         } else if(ctx.arrayFunctions().first){
             visit(ctx.expressionList());
@@ -438,7 +438,7 @@ public class Interpreter extends Parser2BaseVisitor {
             if(lista instanceof ArrayList){
                 this.evalStack.pushValue(((ArrayList) lista).get(0));
             } else {
-                //ERROR
+                System.out.println("No es posible obtener el primer elemento de la lista");
             }
         } else if(ctx.arrayFunctions().last){
             visit(ctx.expressionList());
@@ -446,7 +446,7 @@ public class Interpreter extends Parser2BaseVisitor {
             if(lista instanceof ArrayList){
                 this.evalStack.pushValue(((ArrayList) lista).get(((ArrayList) lista).size()-1));//ultimo valor
             } else {
-                //ERROR
+                System.out.println("No es posible obtener el último elemento de la lista");
             }
         } else if(ctx.arrayFunctions().len){
             visit(ctx.expressionList());
@@ -454,7 +454,7 @@ public class Interpreter extends Parser2BaseVisitor {
             if(lista instanceof ArrayList){
                 this.evalStack.pushValue(((ArrayList) lista).size());
             } else {
-                //ERROR
+                System.out.println("No es posible obtener el tamaño de la lista");
             }
         }else if(ctx.arrayFunctions().rest){
             visit(ctx.expressionList());
@@ -463,7 +463,7 @@ public class Interpreter extends Parser2BaseVisitor {
                 ((ArrayList) lista).remove(0);
                 this.evalStack.pushValue(lista);
             } else {
-                //ERROR
+                System.out.println("No es posible obtener elementos de la lista");
             }
         }
 
@@ -548,7 +548,7 @@ public class Interpreter extends Parser2BaseVisitor {
         if(this.dataS.getData(ctx.identifier().getText())!=null)
             visit(ctx.moreIdentifiers());
         else {
-            //Error
+            System.out.println("Parametros no existente, verifique su validez primero");
         }
         return null;
     }
@@ -557,7 +557,7 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitMoreIdentsAST(Parser2.MoreIdentsASTContext ctx) {
         for(Parser2.IdentifierContext id: ctx.identifier()){
             if(this.dataS.getData(id.getText())==null){
-                //Error
+                System.out.println("Parametros no existente, verifique su validez primero");
                 break;
             }
         }
