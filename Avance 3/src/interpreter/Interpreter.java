@@ -19,13 +19,6 @@ public class Interpreter extends Parser2BaseVisitor {
     }
 
 
-    private boolean isInteger(Object element)
-    {
-        if(element instanceof  Integer)
-            return true;
-        else return false;
-    }
-
     private Integer evaluar(Integer v1, Integer v2, String op){
 
         if(op.equals("+")){
@@ -395,7 +388,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitPExprSTRINGAST(Parser2.PExprSTRINGASTContext ctx) {
-        this.evalStack.pushValue(ctx.STRING().getText());
+        this.evalStack.pushValue(ctx.STRING().getText().replaceAll("\"",""));
         return null;
     }
 
@@ -608,7 +601,10 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitHashContentAST(Parser2.HashContentASTContext ctx) {
         visit(ctx.expression(0));
-        visit(ctx.expression(1));
+        if(ctx.expression(1).start.getText().equals("fn")){
+            this.evalStack.pushValue(ctx.expression(1));
+        }else
+            visit(ctx.expression(1));
         Object value=this.evalStack.popValue();
         Object key=this.evalStack.popValue();
         HashMap dic=(HashMap) this.evalStack.popValue();
