@@ -19,13 +19,13 @@ public class EvaluationStack {
 
     public void printStack(){
 
-        if(!evalStack.empty()){
-            System.out.println("---------------IMPRIMIR STACK------------------");
-            evalStack.forEach(item->
-                    System.out.println(item)
-            );
-            System.out.println("-----------------------------------------------");
-        }
+//        if(!evalStack.empty()){
+//            System.out.println("---------------IMPRIMIR STACK------------------");
+//            evalStack.forEach(item->
+//                    System.out.println(item)
+//            );
+//            System.out.println("-----------------------------------------------");
+//        }
 
     }
 }

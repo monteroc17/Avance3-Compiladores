@@ -1,8 +1,14 @@
-let a=2;
-let funcion = fn(x){
-if (x>1){ 
-  let c=x+1;
-  puts(c) ;
-}
-else{ puts("no es mayor que 1") }
+
+
+
+
+let variableA = 32;
+let variableB = "Esto es una prueba";
+let lista = [1,2,3,4,5];
+let diccionario = {"nombre":"Carolina","apellido":"Alarcón"};
+
+let funcion = fn(x,y)
+{
+   let a = x+y;
+   puts(a*x*y);
 }
