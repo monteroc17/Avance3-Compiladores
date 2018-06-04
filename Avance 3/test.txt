@@ -1,14 +1,5 @@
-
-
-
-
-let variableA = 32;
-let variableB = "Esto es una prueba";
-let lista = [1,2,3,4,5];
-let diccionario = {"nombre":"Carolina","apellido":"Alarcón"};
-
-let funcion = fn(x,y)
-{
-   let a = x+y;
-   puts(a*x*y);
-}
+let hash = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"]};
+let nombre = hash["nombre"];
+let equipos = hash["equipos"];
+puts(nombre);
+puts(hash["estado"]);
