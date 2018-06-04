@@ -1,5 +1,6 @@
-let hash = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"]};
-let nombre = hash["nombre"];
-let equipos = hash["equipos"];
+let diccionario = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"], "datos":{"cedula":207580166,"direccion":"Argentina"}}; // se genera el diccionario
+let nombre = diccionario["nombre"];
+let equipos = diccionario["equipos"];
 puts(nombre);
-puts(hash["estado"]);
+puts(equipos);
+puts(diccionario["datos"]);
