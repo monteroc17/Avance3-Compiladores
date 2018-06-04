@@ -164,7 +164,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
             if(!(ctx.compOperator().size()==1)){
                 for(int i = 0;i<=ctx.compOperator().size()-1;i++){
-                    visit(ctx.additionExpression(i));//cambie esto att josue estaba i+1
+                    visit(ctx.additionExpression(i));
                     Object v2 = this.evalStack.popValue();
                     Object v1 = this.evalStack.popValue();
 

@@ -1,5 +1,11 @@
-let hash = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"]};
-let nombre = hash["nombre"];
-let equipos = hash["equipos"];
+let dic = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"]};
+ 
+let nombre = dic["nombre"];
+ 
+let equipos = dic["equipos"];
+let estado=dic["estado"];
+ 
 puts(nombre);
-puts(hash["estado"]);
+ puts(equipos);
+puts(estado);
+ 
