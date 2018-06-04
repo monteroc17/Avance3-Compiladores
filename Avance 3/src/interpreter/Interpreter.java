@@ -19,13 +19,6 @@ public class Interpreter extends Parser2BaseVisitor {
     }
 
 
-    private boolean isInteger(Object element)
-    {
-        if(element instanceof  Integer)
-            return true;
-        else return false;
-    }
-
     private Integer evaluar(Integer v1, Integer v2, String op){
 
         if(op.equals("+")){
@@ -323,6 +316,7 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitElemExprPECallExpAST(Parser2.ElemExprPECallExpASTContext ctx) {
         //visit(ctx.primitiveExpression());
         if(this.dataS.getData(ctx.primitiveExpression().getText())!=null){//si la variable existe
+            this.cantParametros=0;
             visit(ctx.callExpression());
             this.cantParametros=ctx.callExpression().cont;
             ArrayList temp=new ArrayList<>();
@@ -395,7 +389,7 @@ public class Interpreter extends Parser2BaseVisitor {
 
     @Override
     public Object visitPExprSTRINGAST(Parser2.PExprSTRINGASTContext ctx) {
-        this.evalStack.pushValue(ctx.STRING().getText());
+        this.evalStack.pushValue(ctx.STRING().getText().replaceAll("\"",""));
         return null;
     }
 
@@ -554,6 +548,7 @@ public class Interpreter extends Parser2BaseVisitor {
     public Object visitFuncLitAST(Parser2.FuncLitASTContext ctx) {
 
         this.dataS.openScope();
+        ctx.cont=0;
         visit(ctx.functionParameters());
         ctx.cont+=ctx.functionParameters().cont;
         if(this.cantParametros==ctx.cont)
@@ -570,6 +565,7 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitFuncParamAST(Parser2.FuncParamASTContext ctx) {
         //if(this.dataS.getData(ctx.identifier().getText())!=null){
+            ctx.cont=0;
             this.dataS.addData(ctx.identifier().getText(),this.evalStack.popValue());
             ctx.cont++;
             ctx.moreIdentifiers().cont=0;
@@ -608,7 +604,10 @@ public class Interpreter extends Parser2BaseVisitor {
     @Override
     public Object visitHashContentAST(Parser2.HashContentASTContext ctx) {
         visit(ctx.expression(0));
-        visit(ctx.expression(1));
+        if(ctx.expression(1).start.getText().equals("fn")){
+            this.evalStack.pushValue(ctx.expression(1));
+        }else
+            visit(ctx.expression(1));
         Object value=this.evalStack.popValue();
         Object key=this.evalStack.popValue();
         HashMap dic=(HashMap) this.evalStack.popValue();
