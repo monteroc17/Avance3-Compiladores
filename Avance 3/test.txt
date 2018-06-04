@@ -1,6 +1,11 @@
-let diccionario = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"], "datos":{"cedula":207580166,"direccion":"Argentina"}}; // se genera el diccionario
-let nombre = diccionario["nombre"];
-let equipos = diccionario["equipos"];
+let dic = {"nombre":"Lionel","apellido":"Messi","edad":30,"estado":true,"equipos":["Barcelona"]};
+ 
+let nombre = dic["nombre"];
+ 
+let equipos = dic["equipos"];
+let estado=dic["estado"];
+ 
 puts(nombre);
-puts(equipos);
-puts(diccionario["datos"]);
+ puts(equipos);
+puts(estado);
+ 
